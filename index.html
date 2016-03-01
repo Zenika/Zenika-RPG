@@ -1,0 +1,119 @@
+<!doctype html>
+<html>
+    <head>
+        <meta charset="UTF-8" />
+        <title>hello phaser!</title>
+        <script src="vendors/jquery-2.0.3.min.js" type="text/javascript"></script>
+        <script src="vendors/phaser.2.4.4.min.js" type="text/javascript"></script>
+        <script src="vendors/blob.js" type="text/javascript"></script>
+        <script src="vendors/canvas-to-blob.js" type="text/javascript"></script>
+        <script src="vendors/filesaver.js" type="text/javascript"></script>
+        <script src="vendors/embed.js" type="text/javascript"></script>
+        <style>
+            body {
+                margin: 0px;
+                padding: 0px;
+                font-family: Arial;
+                font-size: 14px;
+                background-color: #000000;
+                color: #fff;
+            }
+        </style>
+    </head>
+    <body>
+
+    <script type="text/javascript">
+
+        var IDE_HOOK = false;
+        var VERSION = '2.4.4';
+
+
+        var game = new Phaser.Game(800, 600, Phaser.CANVAS, 'phaser-example', { preload: preload, create: create, update: update, render: render });
+
+        function preload() {
+
+            game.load.tilemap('map', 'assets/map.json', null, Phaser.Tilemap.TILED_JSON);
+            game.load.image('tiles_homes', 'assets/tiles_homes.png');
+
+        }
+
+        var map;
+        var layer;
+
+        var marker;
+        var currentTile;
+        var cursors;
+
+        function create() {
+
+            map = game.add.tilemap('map');
+
+            map.addTilesetImage('tiles_homes', 'tiles_homes');
+
+            currentTile = map.getTile(2, 3);
+
+            layer = map.createLayer('Calque de Tile 1');
+
+            layer.resizeWorld();
+            layer.setScale(1,1);
+
+            marker = game.add.graphics();
+            marker.lineStyle(2, 0x000000, 1);
+            marker.drawRect(0, 0, 80, 80);
+
+            cursors = game.input.keyboard.createCursorKeys();
+
+            game.camera.z = -20000;
+        }
+
+        function update() {
+
+            marker.x = layer.getTileX(game.input.activePointer.worldX) * 80;
+            marker.y = layer.getTileY(game.input.activePointer.worldY) * 80;
+
+            if (game.input.mousePointer.isDown)
+            {
+                if (game.input.keyboard.isDown(Phaser.Keyboard.SHIFT))
+                {
+                    currentTile = map.getTile(layer.getTileX(marker.x), layer.getTileY(marker.y));
+                }
+                else
+                {
+                    if (map.getTile(layer.getTileX(marker.x), layer.getTileY(marker.y)) != currentTile)
+                    {
+                        map.putTile(currentTile, layer.getTileX(marker.x), layer.getTileY(marker.y))
+                    }
+                }
+            }
+
+            if (cursors.left.isDown)
+            {
+                game.camera.x -= 4;
+            }
+            else if (cursors.right.isDown)
+            {
+                game.camera.x += 4;
+            }
+
+            if (cursors.up.isDown)
+            {
+                game.camera.y -= 4;
+            }
+            else if (cursors.down.isDown)
+            {
+                game.camera.y += 4;
+            }
+
+        }
+
+        function render() {
+
+            game.debug.text('Left-click to paint. Shift + Left-click to select tile. Arrows to scroll.', 80, 80, '#efefef');
+
+        }
+
+
+    </script>
+
+    </body>
+</html>
