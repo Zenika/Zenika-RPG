@@ -28,12 +28,12 @@
         var VERSION = '2.4.4';
 
 
-        var game = new Phaser.Game(800, 600, Phaser.CANVAS, 'phaser-example', { preload: preload, create: create, update: update, render: render });
+        var game = new Phaser.Game(window.innerWidth, window.innerHeight, Phaser.CANVAS, 'phaser-example', { preload: preload, create: create, update: update, render: render });
 
         function preload() {
 
             game.load.tilemap('map', 'assets/map.json', null, Phaser.Tilemap.TILED_JSON);
-            game.load.image('tiles_homes', 'assets/tiles_homes.png');
+            game.load.image('tileset', 'assets/tileset2.png');
 
         }
 
@@ -48,12 +48,19 @@
 
             map = game.add.tilemap('map');
 
-            map.addTilesetImage('tiles_homes', 'tiles_homes');
+            map.addTilesetImage('tileset', 'tileset');
 
             currentTile = map.getTile(2, 3);
 
-            layer = map.createLayer('Calque de Tile 1');
+            layer = map.createLayer('ground1');
+            layer.resizeWorld();
+            layer.setScale(1,1);
 
+            layer = map.createLayer('ground2');
+            layer.resizeWorld();
+            layer.setScale(1,1);
+
+            layer = map.createLayer('house');
             layer.resizeWorld();
             layer.setScale(1,1);
 
