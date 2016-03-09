@@ -23,100 +23,99 @@
     <body>
 
     <script type="text/javascript">
-
         var IDE_HOOK = false;
         var VERSION = '2.4.4';
 
-
-        var game = new Phaser.Game(window.innerWidth, window.innerHeight, Phaser.CANVAS, 'phaser-example', { preload: preload, create: create, update: update, render: render });
+        var game = new Phaser.Game(window.innerWidth, window.innerHeight, Phaser.AUTO, 'phaser-example', { preload: preload, create: create, update: update, render: render });
 
         function preload() {
-
-            game.load.tilemap('map', 'assets/map.json', null, Phaser.Tilemap.TILED_JSON);
-            game.load.image('tileset', 'assets/tileset2.png');
+            game.load.image('map', 'assets/map2.png');
+            game.load.spritesheet('ship', 'assets/humstar.png', 32, 32);
+            game.load.image('ball', 'assets/shinyball.png');
 
         }
 
+        var ship;
         var map;
-        var layer;
-
-        var marker;
-        var currentTile;
         var cursors;
 
         function create() {
 
-            map = game.add.tilemap('map');
+            game.world.setBounds(0, 0, 2400, 2400);
 
-            map.addTilesetImage('tileset', 'tileset');
+            game.physics.startSystem(Phaser.Physics.P2JS);
+            game.physics.p2.defaultRestitution = 0.9;
 
-            currentTile = map.getTile(2, 3);
+            map = game.add.tileSprite(0, 0, 2400, 2400, 'map');
+            map.fixedToCamera = true;
 
-            layer = map.createLayer('ground1');
-            layer.resizeWorld();
-            layer.setScale(1,1);
+            balls = game.add.group();
+            balls.enableBody = true;
+            balls.physicsBodyType = Phaser.Physics.P2JS;
 
-            layer = map.createLayer('ground2');
-            layer.resizeWorld();
-            layer.setScale(1,1);
+            for (var i = 0; i < 50; i++)
+            {
+                var ball = balls.create(game.world.randomX, game.world.randomY, 'ball');
+                ball.body.setCircle(16);
+            }
 
-            layer = map.createLayer('house');
-            layer.resizeWorld();
-            layer.setScale(1,1);
+            ship = game.add.sprite(1239, 1416, 'ship');
+            ship.scale.set(3);
+            ship.smoothed = false;
+            ship.animations.add('fly', [0,1,2,3,4,5], 10, true);
+            ship.play('fly');
 
-            marker = game.add.graphics();
-            marker.lineStyle(2, 0x000000, 1);
-            marker.drawRect(0, 0, 80, 80);
+            map.tilePosition.x = -600;
+            map.tilePosition.y = -1143;
+
+            //1245/3, 1394/3
+            //  Create our physics body - a 28px radius circle. Set the 'false' parameter below to 'true' to enable debugging
+            game.physics.p2.enable(ship, false);
+
+            ship.body.setCircle(14*3);
+
+            game.camera.follow(ship);
 
             cursors = game.input.keyboard.createCursorKeys();
-
-            game.camera.z = -20000;
         }
 
         function update() {
 
-            marker.x = layer.getTileX(game.input.activePointer.worldX) * 80;
-            marker.y = layer.getTileY(game.input.activePointer.worldY) * 80;
-
-            if (game.input.mousePointer.isDown)
-            {
-                if (game.input.keyboard.isDown(Phaser.Keyboard.SHIFT))
-                {
-                    currentTile = map.getTile(layer.getTileX(marker.x), layer.getTileY(marker.y));
-                }
-                else
-                {
-                    if (map.getTile(layer.getTileX(marker.x), layer.getTileY(marker.y)) != currentTile)
-                    {
-                        map.putTile(currentTile, layer.getTileX(marker.x), layer.getTileY(marker.y))
-                    }
-                }
-            }
+            ship.body.setZeroVelocity();
 
             if (cursors.left.isDown)
             {
-                game.camera.x -= 4;
+                ship.body.moveLeft(200);
             }
             else if (cursors.right.isDown)
             {
-                game.camera.x += 4;
+                ship.body.moveRight(200);
             }
 
             if (cursors.up.isDown)
             {
-                game.camera.y -= 4;
+                ship.body.moveUp(200);
             }
             else if (cursors.down.isDown)
             {
-                game.camera.y += 4;
+                ship.body.moveDown(200);
+            }
+
+            if (!game.camera.atLimit.x)
+            {
+                map.tilePosition.x -= (ship.body.velocity.x * game.time.physicsElapsed);
+            }
+
+            if (!game.camera.atLimit.y)
+            {
+                map.tilePosition.y -= (ship.body.velocity.y * game.time.physicsElapsed);
             }
 
         }
 
         function render() {
-
-            game.debug.text('Left-click to paint. Shift + Left-click to select tile. Arrows to scroll.', 80, 80, '#efefef');
-
+            game.debug.text(ship.x + ', ' + ship.y, 80, 80, '#efefef');
+            game.debug.text(map.tilePosition.x + ', ' + map.tilePosition.y, 80, 120, '#efefef');
         }
 
 
