@@ -2,6 +2,9 @@
 <map version="1.0" orientation="orthogonal" renderorder="right-down" width="30" height="30" tilewidth="80" tileheight="80" nextobjectid="1">
  <tileset firstgid="1" name="tileset" tilewidth="80" tileheight="80" tilecount="14758" columns="94">
   <image source="tileset2.png" width="7520" height="12595"/>
+  <terraintypes>
+   <terrain name="Nouveau terrain" tile="-1"/>
+  </terraintypes>
  </tileset>
  <layer name="ground1" width="30" height="30">
   <data encoding="csv">

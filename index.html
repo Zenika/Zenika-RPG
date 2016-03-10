@@ -1,125 +1,145 @@
 <!doctype html>
 <html>
-    <head>
-        <meta charset="UTF-8" />
-        <title>hello phaser!</title>
-        <script src="vendors/jquery-2.0.3.min.js" type="text/javascript"></script>
-        <script src="vendors/phaser.2.4.4.min.js" type="text/javascript"></script>
-        <script src="vendors/blob.js" type="text/javascript"></script>
-        <script src="vendors/canvas-to-blob.js" type="text/javascript"></script>
-        <script src="vendors/filesaver.js" type="text/javascript"></script>
-        <script src="vendors/embed.js" type="text/javascript"></script>
-        <style>
-            body {
-                margin: 0px;
-                padding: 0px;
-                font-family: Arial;
-                font-size: 14px;
-                background-color: #000000;
-                color: #fff;
-            }
-        </style>
-    </head>
-    <body>
+<head>
+    <meta charset="UTF-8"/>
+    <title>hello phaser!</title>
+    <script src="vendors/jquery-2.0.3.min.js" type="text/javascript"></script>
+    <script src="vendors/phaser.2.4.4.min.js" type="text/javascript"></script>
+    <script src="vendors/blob.js" type="text/javascript"></script>
+    <script src="vendors/canvas-to-blob.js" type="text/javascript"></script>
+    <script src="vendors/filesaver.js" type="text/javascript"></script>
+    <script src="vendors/embed.js" type="text/javascript"></script>
+    <style>
+        body {
+            margin: 0px;
+            padding: 0px;
+            font-family: Arial;
+            font-size: 14px;
+            background-color: #000000;
+            color: #fff;
+        }
+    </style>
+</head>
+<body>
 
-    <script type="text/javascript">
-        var IDE_HOOK = false;
-        var VERSION = '2.4.4';
+<script type="text/javascript">
+    var IDE_HOOK = false;
+    var VERSION = '2.4.4';
 
-        var game = new Phaser.Game(window.innerWidth, window.innerHeight, Phaser.AUTO, 'phaser-example', { preload: preload, create: create, update: update, render: render });
+    var game = new Phaser.Game(window.innerWidth, window.innerHeight, Phaser.AUTO, 'phaser-example', {
+        preload: preload,
+        create: create,
+        update: update,
+        render: render
+    });
 
-        function preload() {
-            game.load.image('map', 'assets/map2.png');
-            game.load.spritesheet('ship', 'assets/humstar.png', 32, 32);
-            game.load.image('ball', 'assets/shinyball.png');
+    function preload() {
+        game.load.tilemap('map', 'assets/map3.json', null, Phaser.Tilemap.TILED_JSON);
+        game.load.image('tileset', 'assets/map2.png');
+        game.load.image('wall', 'assets/wall.png');
 
+        game.load.spritesheet('ship', 'assets/humstar.png', 32, 32);
+        game.load.image('ball', 'assets/shinyball.png');
+        game.load.image('block', 'assets/block.png');
+    }
+
+    var ship;
+    var map;
+    var cursors;
+    var customBounds;
+    var layerGround;
+    var layerWall;
+
+    function create() {
+
+        game.physics.startSystem(Phaser.Physics.P2JS);
+
+        game.stage.backgroundColor = '#2d2d2d';
+
+        map = game.add.tilemap('map');
+
+        map.addTilesetImage('tileset');
+        map.addTilesetImage('wall');
+
+        layerWall = map.createLayer('walls');
+        layerGround = map.createLayer('ground');
+
+        layerGround.resizeWorld();
+
+        //  Set the tiles for collision.
+        //  Do this BEFORE generating the p2 bodies below.
+        map.setCollision(901, true, layerWall);
+
+        //  Convert the tilemap layer into bodies. Only tiles that collide (see above) are created.
+        //  This call returns an array of body objects which you can perform addition actions on if
+        //  required. There is also a parameter to control optimising the map build.
+        game.physics.p2.convertTilemap(map, layerWall);
+
+        createShip();
+        createBalls();
+
+        //  By default the ship will collide with the World bounds,
+        //  however because you have changed the size of the world (via layer.resizeWorld) to match the tilemap
+        //  you need to rebuild the physics world boundary as well. The following
+        //  line does that. The first 4 parameters control if you need a boundary on the left, right, top and bottom of your world.
+        //  The final parameter (false) controls if the boundary should use its own collision group or not. In this case we don't require
+        //  that, so it's set to false. But if you had custom collision groups set-up then you would need this set to true.
+        game.physics.p2.setBoundsToWorld(true, true, true, true, false);
+
+        //  Even after the world boundary is set-up you can still toggle if the ship collides or not with this:
+        // ship.body.collideWorldBounds = false;
+
+        cursors = game.input.keyboard.createCursorKeys();
+    }
+
+    function createShip() {
+        ship = game.add.sprite(1286, 1461, 'ship');
+        ship.scale.set(3);
+        ship.smoothed = false;
+        ship.animations.add('fly', [0, 1, 2, 3, 4, 5], 10, true);
+        ship.play('fly');
+
+        //  Create our physics body - a 28px radius circle. Set the 'false' parameter below to 'true' to enable debugging
+        game.physics.p2.enable(ship, false);
+
+        ship.body.setCircle(14 * 3);
+
+        game.camera.follow(ship);
+    }
+
+    function createBalls() {
+        var balls = game.add.group();
+        balls.enableBody = true;
+        balls.physicsBodyType = Phaser.Physics.P2JS;
+
+        for (var i = 0; i < 50; i++) {
+            var ball = balls.create(game.world.randomX, game.world.randomY, 'ball');
+            ball.body.setCircle(16);
+        }
+    }
+
+    function update() {
+        ship.body.setZeroVelocity();
+
+        if (cursors.left.isDown) {
+            ship.body.moveLeft(400);
+        }
+        else if (cursors.right.isDown) {
+            ship.body.moveRight(400);
         }
 
-        var ship;
-        var map;
-        var cursors;
-
-        function create() {
-
-            game.world.setBounds(0, 0, 2400, 2400);
-
-            game.physics.startSystem(Phaser.Physics.P2JS);
-            game.physics.p2.defaultRestitution = 0.9;
-
-            map = game.add.tileSprite(0, 0, 2400, 2400, 'map');
-            map.fixedToCamera = true;
-
-            balls = game.add.group();
-            balls.enableBody = true;
-            balls.physicsBodyType = Phaser.Physics.P2JS;
-
-            for (var i = 0; i < 50; i++)
-            {
-                var ball = balls.create(game.world.randomX, game.world.randomY, 'ball');
-                ball.body.setCircle(16);
-            }
-
-            ship = game.add.sprite(1239, 1416, 'ship');
-            ship.scale.set(3);
-            ship.smoothed = false;
-            ship.animations.add('fly', [0,1,2,3,4,5], 10, true);
-            ship.play('fly');
-
-            map.tilePosition.x = -600;
-            map.tilePosition.y = -1143;
-
-            //1245/3, 1394/3
-            //  Create our physics body - a 28px radius circle. Set the 'false' parameter below to 'true' to enable debugging
-            game.physics.p2.enable(ship, false);
-
-            ship.body.setCircle(14*3);
-
-            game.camera.follow(ship);
-
-            cursors = game.input.keyboard.createCursorKeys();
+        if (cursors.up.isDown) {
+            ship.body.moveUp(400);
         }
-
-        function update() {
-
-            ship.body.setZeroVelocity();
-
-            if (cursors.left.isDown)
-            {
-                ship.body.moveLeft(200);
-            }
-            else if (cursors.right.isDown)
-            {
-                ship.body.moveRight(200);
-            }
-
-            if (cursors.up.isDown)
-            {
-                ship.body.moveUp(200);
-            }
-            else if (cursors.down.isDown)
-            {
-                ship.body.moveDown(200);
-            }
-
-            if (!game.camera.atLimit.x)
-            {
-                map.tilePosition.x -= (ship.body.velocity.x * game.time.physicsElapsed);
-            }
-
-            if (!game.camera.atLimit.y)
-            {
-                map.tilePosition.y -= (ship.body.velocity.y * game.time.physicsElapsed);
-            }
-
+        else if (cursors.down.isDown) {
+            ship.body.moveDown(400);
         }
+    }
 
-        function render() {
-            game.debug.text(ship.x + ', ' + ship.y, 80, 80, '#efefef');
-            game.debug.text(map.tilePosition.x + ', ' + map.tilePosition.y, 80, 120, '#efefef');
-        }
+    function render() {
+        game.debug.text(ship.x + ', ' + ship.y, 80, 80, '#efefef');
+    }
+</script>
 
-
-    </script>
-
-    </body>
+</body>
 </html>
