@@ -77,6 +77,7 @@
 
         createShip();
         createBalls();
+        createBox();
 
         //  By default the ship will collide with the World bounds,
         //  however because you have changed the size of the world (via layer.resizeWorld) to match the tilemap
@@ -86,10 +87,27 @@
         //  that, so it's set to false. But if you had custom collision groups set-up then you would need this set to true.
         game.physics.p2.setBoundsToWorld(true, true, true, true, false);
 
+        //  And before this will happen, we need to turn on impact events for the world
+        game.physics.p2.setImpactEvents(true);
+
         //  Even after the world boundary is set-up you can still toggle if the ship collides or not with this:
         // ship.body.collideWorldBounds = false;
-
         cursors = game.input.keyboard.createCursorKeys();
+    }
+
+    function createBox() {
+        var block = game.add.sprite(1040, 1460, 'block');
+        game.physics.p2.enable([block], true);
+        block.body.kinematic = true;
+
+        //  Here we create a Body specific callback.
+        //  Note that only impact events between the ship and the panda are used here, the sweet/candy object is ignored.
+        ship.body.createBodyCallback(block, function(body1, body2){
+            game.debug.text("Aie !!!", 280, 280, '#efefef');
+            setTimeout(function(){
+                game.debug.text("", 280, 280, '#efefef');
+            }, 1000*3);
+        }, this);
     }
 
     function createShip() {
@@ -137,7 +155,7 @@
     }
 
     function render() {
-        game.debug.text(ship.x + ', ' + ship.y, 80, 80, '#efefef');
+        //game.debug.text(ship.x + ', ' + ship.y, 80, 80, '#efefef');
     }
 </script>
 
