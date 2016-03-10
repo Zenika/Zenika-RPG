@@ -49,6 +49,7 @@
     var customBounds;
     var layerGround;
     var layerWall;
+    var block;
 
     function create() {
 
@@ -93,21 +94,37 @@
         //  Even after the world boundary is set-up you can still toggle if the ship collides or not with this:
         // ship.body.collideWorldBounds = false;
         cursors = game.input.keyboard.createCursorKeys();
+
+        game.physics.p2.setPostBroadphaseCallback(function (body1, body2) {
+            if (collide(ship, block, body1, body2)) {
+                game.debug.text("Bonjour, je suis une boite !!!", 280, 280, '#efefef');
+                setTimeout(function () {
+                    game.debug.text("", 280, 280, '#efefef');
+                }, 1000 * 3);
+                return false;
+            }
+            return true;
+        }, this);
+    }
+
+    function collide(el1, el2, body1, body2) {
+        if (el1.body == body1 && el2.body == body2) {
+            return true;
+        } else if (el1.body == body2 && el2.body == body1) {
+            return true;
+        }
+        return false;
     }
 
     function createBox() {
-        var block = game.add.sprite(1040, 1460, 'block');
-        game.physics.p2.enable([block], true);
-        block.body.kinematic = true;
+        block = game.add.sprite(1040, 1460, 'block');
+        game.physics.p2.enable([block], false);
+        block.body.static = true;
+        block.body.setCircle(150);
 
-        //  Here we create a Body specific callback.
-        //  Note that only impact events between the ship and the panda are used here, the sweet/candy object is ignored.
-        ship.body.createBodyCallback(block, function(body1, body2){
-            game.debug.text("Aie !!!", 280, 280, '#efefef');
-            setTimeout(function(){
-                game.debug.text("", 280, 280, '#efefef');
-            }, 1000*3);
-        }, this);
+        var block2 = game.add.sprite(1040, 1460, 'block');
+        game.physics.p2.enable([block2], false);
+        block2.body.static = true;
     }
 
     function createShip() {
