@@ -26,7 +26,10 @@
     var IDE_HOOK = false;
     var VERSION = '2.4.4';
 
-    var game = new Phaser.Game(window.innerWidth, window.innerHeight, Phaser.AUTO, 'phaser-example', {
+    var gameWidth = window.innerWidth;
+    var gameHeight = window.innerHeight;
+
+    var game = new Phaser.Game(gameWidth, gameHeight, Phaser.AUTO, 'phaser-example', {
         preload: preload,
         create: create,
         update: update,
@@ -50,6 +53,10 @@
     var layerGround;
     var layerWall;
     var block;
+
+    var timeoutFlag;
+
+    var isTextDisplayed = false;
 
     function create() {
 
@@ -78,7 +85,7 @@
 
         createShip();
         createBalls();
-        createBox();
+        createBoxes();
 
         //  By default the ship will collide with the World bounds,
         //  however because you have changed the size of the world (via layer.resizeWorld) to match the tilemap
@@ -96,10 +103,19 @@
         cursors = game.input.keyboard.createCursorKeys();
 
         game.physics.p2.setPostBroadphaseCallback(function (body1, body2) {
-            if (collide(ship, block, body1, body2)) {
-                game.debug.text("Bonjour, je suis une boite !!!", 280, 280, '#efefef');
-                setTimeout(function () {
+            if (collideShip(body1, body2)) {
+                if(!isTextDisplayed){
+                    isTextDisplayed = true;
+                    game.debug.text("Bonjour, je suis une boite !!!", 280, 280, '#efefef');
+                }
+
+                if(timeoutFlag){
+                   clearTimeout(timeoutFlag);
+                }
+                timeoutFlag = setTimeout(function () {
+                    timeoutFlag = undefined;
                     game.debug.text("", 280, 280, '#efefef');
+                    isTextDisplayed = false;
                 }, 1000 * 3);
                 return false;
             }
@@ -107,23 +123,39 @@
         }, this);
     }
 
-    function collide(el1, el2, body1, body2) {
-        if (el1.body == body1 && el2.body == body2) {
-            return true;
-        } else if (el1.body == body2 && el2.body == body1) {
+    function collideShip(body1, body2){
+        if(body1.ship){
+            return collideShipWithBox(body1, body2);
+        } else if(body2.ship) {
+            return collideShipWithBox(body2, body1);
+        }
+        return false
+    }
+
+    function collideShipWithBox(ship, body) {
+        if(body.allowGoThrow){
             return true;
         }
         return false;
     }
 
-    function createBox() {
-        block = game.add.sprite(1040, 1460, 'block');
-        game.physics.p2.enable([block], false);
-        block.body.static = true;
-        block.body.setCircle(150);
+    function createBoxes(){
+        createBox(900, 1380);
+        createBox(1040, 1600);
+        createBox(1210, 1700);
+        createBox(1450, 1700);
+        createBox(1600, 1380);
+    }
 
-        var block2 = game.add.sprite(1040, 1460, 'block');
-        game.physics.p2.enable([block2], false);
+    function createBox(x, y) {
+        block = game.add.sprite(x, y, 'block');
+        game.physics.p2.enable([block], true);
+        block.body.static = true;
+        block.body.setCircle(100);
+        block.body.allowGoThrow = true;
+
+        var block2 = game.add.sprite(x, y, 'block');
+        game.physics.p2.enable([block2], true);
         block2.body.static = true;
     }
 
@@ -135,9 +167,10 @@
         ship.play('fly');
 
         //  Create our physics body - a 28px radius circle. Set the 'false' parameter below to 'true' to enable debugging
-        game.physics.p2.enable(ship, false);
+        game.physics.p2.enable(ship, true);
 
         ship.body.setCircle(14 * 3);
+        ship.body.ship = true;
 
         game.camera.follow(ship);
     }
@@ -157,17 +190,17 @@
         ship.body.setZeroVelocity();
 
         if (cursors.left.isDown) {
-            ship.body.moveLeft(400);
+            ship.body.moveLeft(300);
         }
         else if (cursors.right.isDown) {
-            ship.body.moveRight(400);
+            ship.body.moveRight(300);
         }
 
         if (cursors.up.isDown) {
-            ship.body.moveUp(400);
+            ship.body.moveUp(300);
         }
         else if (cursors.down.isDown) {
-            ship.body.moveDown(400);
+            ship.body.moveDown(300);
         }
     }
 
