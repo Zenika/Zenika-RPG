@@ -25,6 +25,7 @@
 <script type="text/javascript">
     var IDE_HOOK = false;
     var VERSION = '2.4.4';
+    var DEBUG = true;
 
     var gameWidth = window.innerWidth;
     var gameHeight = window.innerHeight;
@@ -149,13 +150,13 @@
 
     function createBox(x, y) {
         block = game.add.sprite(x, y, 'block');
-        game.physics.p2.enable([block], true);
+        game.physics.p2.enable([block], DEBUG);
         block.body.static = true;
         block.body.setCircle(100);
         block.body.allowGoThrow = true;
 
         var block2 = game.add.sprite(x, y, 'block');
-        game.physics.p2.enable([block2], true);
+        game.physics.p2.enable([block2], DEBUG);
         block2.body.static = true;
     }
 
@@ -167,7 +168,7 @@
         ship.play('fly');
 
         //  Create our physics body - a 28px radius circle. Set the 'false' parameter below to 'true' to enable debugging
-        game.physics.p2.enable(ship, true);
+        game.physics.p2.enable(ship, DEBUG);
 
         ship.body.setCircle(14 * 3);
         ship.body.ship = true;
