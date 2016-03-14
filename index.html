@@ -29,6 +29,10 @@
           position: absolute;
           top: 30px;
           right: 30px;
+          background-color: red;
+          height: 300px;
+          width: 60px;
+          padding: 5px;
         }
         .box {
           background-color: white;
@@ -36,22 +40,87 @@
           padding: 15px;
           color: black;
           width: 400px;
-          height: 400px;
           position: absolute;
           top: 30px;
           left: 30px;
           display: none;
         }
+        .start {
+          font-size: 20px;
+          text-align: center;
+          width: 80%;
+          position: absolute;
+          top: 10%;
+          left: 10%;
+          display: none;
+        }
+        .start > .header {
+          border: 1px solid red;
+          color: white;
+          background-color: red;
+          padding: 15px;
+          width: 100%;
+        }
+        .start > .content {
+          border: 1px solid red;
+          color: gray;
+          background-color: white;
+          padding: 15px;
+          width: 100%;
+        }
     </style>
 </head>
 <body>
 
-  <div id="menu" class="menu">Menu</div>
+  <div id="menu" class="menu">Menu
+    <input id="newGameButton" type="button" value="Nouvelle partie"/>
+  </div>
+
+  <div id="newGame" class="start">
+    <div class="header">
+      <h3>Bienvenu dans ce questionnaire Zenika</h3>
+    </div>
+    <div class="content">
+      <form>
+        <p>
+          <label for="inputFirstname">Prénom</label>
+          <input name="inputFirstname" type="text" placeholder="Prénom"/>
+            <label for="inputLastname">Nom</label>
+          <input name="inputLastname" type="text" placeholder="Nom"/>
+            <label for="inputEmail">Email</label>
+          <input name="inputEmail" type="email" placeholder="Email"/>
+        </p>
+        <p><input id="startGameButton" type="button" value="Commencer"/></p>
+      </form>
+      <p>Répondez aux quuestions de nos pôles pour tenter de gagner des lots</p>
+      <p>Parcourez le monde, récupérez les 'Bidules' et découvrez nos agences</p>
+    </div>
+  </div>
 
   <div id="box" class="box">
     <h1 id="title"></h1>
-    <input id="continue" type="button" value="Continue"/>
     <input id="takeQuizz" type="button" value="Take Quizz"/>
+  </div>
+
+  <div id="question" class="box">
+    <h1 id="title"></h1>
+    <h3 id="questionLibelle"></h3>
+    <div>
+      <input id="reponse1" type="button"/>
+      <input id="reponse2" type="button"/>
+      <input id="reponse3" type="button"/>
+      <input id="reponse4" type="button"/>
+    </div>
+    <div>
+      <input id="quit" type="button" value="Quit"/>
+    </div>
+  </div>
+
+  <div id="continueScreen" class="box">
+    <h3>Well done !</h3>
+    <div>
+      <input id="continue" type="button" value="Continue"/>
+    </div>
   </div>
 
   <!-- include the main game file -->

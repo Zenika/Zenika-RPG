@@ -50,12 +50,28 @@ ZenikaRPG.Game.prototype = {
     // ship.body.collideWorldBounds = false;
     this.cursors = this.game.input.keyboard.createCursorKeys();
 
+    var self = this;
     var timeoutFlag;
     var isTextDisplayed = false;
+    var doingQuizz = false;
+
+
+    self.ship.isAllowedToMove = true;
+
+    $('#newGameButton').click(function() {
+      $('#newGame').show();
+    });
+
+    $('#startGameButton').click(function() {
+      $('#newGame').hide();
+      $('#newGameButton').hide();
+      self.ship.isAllowedToMove = true;
+    });
+
 
     this.game.physics.p2.setPostBroadphaseCallback(function (body1, body2) {
 
-        var box;
+        var box = null;
         if(body1.ship){
             box = body2;
         } else if(body2.ship) {
@@ -64,25 +80,101 @@ ZenikaRPG.Game.prototype = {
 
         if (collideShip(body1, body2)) {
             if(!this.ship.uncounter[box.name]) {
-              $('#box').show();
-              $('#title').text(box.name);
-              // this.ship.isAllowedToMove = false;
-              var self = this;
-              $('#continue').click(function() {
-                $('#box').hide();
-                self.ship.isAllowedToMove = true;
-              });
+              if(!doingQuizz && !isTextDisplayed) {
+                $('#box').show();
+                $('#title').text(box.name);
 
-              $('#takeQuizz').click(function() {
-                self.ship.isAllowedToMove = false;
-              });
-
-
-              // self.ship.uncounter[box.name] = true;
-            }
-            if(!isTextDisplayed){
                 isTextDisplayed = true;
-                // this.game.debug.text("Bonjour, je suis une boite !!! ("+box.name+")", 280, 280, '#efefef');
+
+                var validate = function() {
+                  $('#box').hide();
+                  $('#question').hide();
+                  $('#continueScreen').hide();
+                  self.ship.isAllowedToMove = true;
+                  if(box) {
+                    self.ship.uncounter[box.name] = true;
+                  }
+                  doingQuizz = false;
+                  $("#continue").unbind("click");
+                  $("#quit").unbind("click");
+                  $("#takeQuizz").unbind("click");
+                  console.log('box', box.name);
+                  box = null;
+                }
+
+                function showContinue() {
+                  $('#question').hide();
+                  $('#continueScreen').show();
+                }
+
+                function displayQuestion(box, questions, state) {
+                  console.log('question', box.name, questions.length, state)
+                  if(state >= questions.length) {
+                    showContinue();
+                    return;
+                  }
+
+                  var question = questions[state];
+                  $('#questionLibelle').html(question.libelle);
+
+                  var startTime = Date.now();
+
+                  for(var i=1; i <= 4; i++) {
+                    var reponseId = '#reponse'+i;
+                    $(reponseId).unbind('click');
+                  }
+
+                  var i = 1;
+                  question.reponsePossibles.forEach(function(reponse) {
+                    var index = i;
+                    var reponseId = '#reponse'+i;
+                    $(reponseId).val(reponse);
+
+                    $(reponseId).bind('click', function() {
+                      console.log('bind', box.name, reponseId);
+                      var endTime = Date.now();
+                      question.reponse = index;
+                      question.duration = endTime - startTime;
+                      state = state+1;
+                      displayQuestion(box, questions, state)
+                    });
+                    i++;
+                  });
+                }
+
+
+                $('#takeQuizz').bind('click', function() {
+                  doingQuizz = true;
+                  $('#box').hide();
+                  self.ship.isAllowedToMove = false;
+
+                  // console.log(box.name, box.box.state, box.box.questions.length)
+                  if(box.box.state < box.box.questions.length) {
+                    $('#question').show();
+                    displayQuestion(box, box.box.questions, box.box.state)
+                  }
+                  else {
+                    showContinue();
+                  }
+
+                  $('#continue').bind('click', validate);
+
+                  $('#quit').bind('click', function() {
+                    $('#box').hide();
+                    $('#question').hide();
+                    self.ship.isAllowedToMove = true;
+                    if(box) {
+                      self.ship.uncounter[box.name] = false;
+                    }
+                    doingQuizz = false;
+                    $("#continue").unbind("click");
+                    $("#quit").unbind("click");
+                    $("#takeQuizz").unbind("click");
+                    box = null;
+                  });
+                });
+              }
+
             }
 
             if(timeoutFlag){
@@ -154,31 +246,106 @@ ZenikaRPG.Game.prototype = {
       this.ship.body.setCircle(14 * 3);
       this.ship.body.ship = true;
 
-      this.ship.isAllowedToMove = true;
+      this.ship.isAllowedToMove = false;
 
       this.ship.uncounter = {};
 
       this.game.camera.follow(this.ship);
   },
   createBoxes: function(){
-      this.createBox(900, 1380, 'Web');
-      this.createBox(1040, 1600, 'Big Data');
-      this.createBox(1210, 1700, 'DevOps');
-      this.createBox(1450, 1700, 'Agile');
-      this.createBox(1600, 1380, 'Craftmanship');
+    var boxes = [
+      {
+        x: 900,
+        y: 1300,
+        name: "Web",
+        state: 0,
+        questions: [
+          {
+            libelle: 'Quelle est le principal défaut de AngularJS (V1) ?',
+            reponsePossibles: [
+              'La productivité est faible',
+              'La communauté n\'est pas active',
+              'Le framework est trop complexe',
+              'La création de composant n\'est pas simple'
+            ],
+            bonneReponse: 4,
+            reponse: null,
+            duration: -1
+          },
+          {
+            libelle: 'Question 2 ?',
+            reponsePossibles: [
+              'Réponse 1',
+              'Réponse 2',
+              'Réponse 3',
+              'Réponse 4'
+            ],
+            bonneReponse: 3,
+            reponse: null,
+            duration: -1
+          }
+        ]
+      },
+      {
+        x: 1040,
+        y: 1600,
+        name: "Big Data",
+        state: 0,
+        questions: []
+      },
+      {
+        x: 1210,
+        y: 1700,
+        name: "DevOps",
+        state: 0,
+        questions: [
+          {
+            libelle: 'Question 1 ?',
+            reponsePossibles: [
+              'Réponse 1',
+              'Réponse 2',
+              'Réponse 3',
+              'Réponse 4'
+            ],
+            bonneReponse: 2,
+            reponse: null,
+            duration: -1
+          }
+        ]
+      },
+      {
+        x: 1450,
+        y: 1700,
+        name: "Agile",
+        state: 0,
+        questions: []
+      },
+      {
+        x: 1600,
+        y: 1380,
+        name: "Craftmanship",
+        state: 0,
+        questions: []
+      }
+    ];
+
+    var self = this;
+    boxes.forEach(function(box) {
+      self.createBox(box.x, box.y, box);
+    });
   },
-  createBox: function(x, y, name) {
+  createBox: function(x, y, box) {
       block = this.game.add.sprite(x, y, 'block');
       this.game.physics.p2.enable([block], this.DEBUG);
       block.body.static = true;
       block.body.setCircle(100);
       block.body.allowGoThrow = true;
-      block.body.name = name;
+      block.body.name = box.name;
+      block.body.box = box;
 
       var block2 = this.game.add.sprite(x, y, 'block');
       this.game.physics.p2.enable([block2], this.DEBUG);
       block2.body.static = true;
-      block2.body.name = name;
 
       this.ship.uncounter[name] = false;
 
