@@ -22,24 +22,46 @@
             font-family: Arial;
             font-size: 14px;
             background-color: #000000;
-            color: #fff;
+            /*color: #fff;*/
+            color: gray;
         }
         .menu {
           color: black;
           position: absolute;
-          top: 5%;
+          top: 8%;
           right: 3%;
           background-color: red;
-          height: 80%;
-          width: 6%;
+          /*height: 80%;*/
+          width: 3%;
           padding: 5px;
+          text-align: center;
+          display: none;
+        }
+
+        .menu .offre {
+          width: 100%;
+          display: block;
+        }
+        .menu .done {
+          position: relative;
+          float: left
+        }
+        .menu .done:after {
+          width: 100%;
+          height: 100%;
+          background: url(http://dummyimage.com/32x32/f0f/fff);
+          display: block;
+          content: ' ';
+          position: absolute;
+          bottom: 0;
+          right: 0
         }
 
         .box {
-          width: 30%;
-          height: 70%;
+          width: 34%;
+          height: 45%;
           position: absolute;
-          top: 5%;
+          top: 8%;
           left: 3%;
           display: none;
         }
@@ -59,27 +81,50 @@
         }
         .box > .content {
           border: 1px solid red;
-          color: gray;
           background-color: white;
           padding: 15px;
           width: 100%;
           height: 100%;
           display: none;
+          text-align: center;
         }
         .box > .content .reponse {
           margin: 2%;
+        }
+
+        .button {
           padding: 4%;
           width: 37%;
           height: 50px;
-          cursor: pointer;
           border: 1px solid red;
+          background-color: white;
+          cursor: pointer;
           display: inline-table;
           text-align: center;
           vertical-align: middle;
         }
 
-        .box > .content .reponse .text {
+        .button-inverse {
+          border: 1px solid red;
+          background-color: red;
+          color: white;
+        }
+
+        .button-small {
+          width: 17%;
+          height: 30px;
+          padding: 15px;
+        }
+
+        .button .text {
           height: 50px;
+          display: table-cell;;
+          text-align: center;
+          vertical-align: middle;
+        }
+
+        .button-small .text {
+          height: 30px;
           display: table-cell;;
           text-align: center;
           vertical-align: middle;
@@ -88,10 +133,10 @@
         .start {
           font-size: 20px;
           text-align: center;
-          width: 80%;
+          width: 70%;
           position: absolute;
-          top: 10%;
-          left: 10%;
+          top: 24%;
+          left: 15%;
           display: none;
         }
         .start > .header {
@@ -112,8 +157,16 @@
 </head>
 <body>
 
-  <div id="menu" class="menu">Menu
-    <input id="newGameButton" type="button" value="Nouvelle partie"/>
+  <div id="menu" class="menu">
+    Menu
+    <!-- <p><a id="newGameButton" class="button button-small"><span class="text">Nouvelle partie</span></a></p> -->
+    <div id="offreJava"><img class="offre" src="assets/offres/Java.png"/></div>
+    <div id="offreCraftsmanship"><img class="offre" src="assets/offres/Craftsman.png"/></div>
+    <div id="offreBigData"><img class="offre" src="assets/offres/BigData.png"/></div>
+    <div id="offreDevOps"><img class="offre" src="assets/offres/DevOps.png"/></div>
+    <div id="offreWeb"><img class="offre" src="assets/offres/Web.png"/></div>
+    <div id="offreIOT"><img class="offre" src="assets/offres/IOT.png"/></div>
+    <div id="offreAgile"><img class="offre" src="assets/offres/Agile.png"/></div>
   </div>
 
   <div id="newGame" class="start">
@@ -130,7 +183,9 @@
             <label for="inputEmail">Email</label>
           <input name="inputEmail" type="email" placeholder="Email"/>
         </p>
-        <p><input id="startGameButton" type="button" value="Commencer"/></p>
+        <p><a id="startGameButton" class="button button-inverse button-small"><span class="text">Commencer</span></a></p>
+
+
       </form>
       <p>Répondez aux quuestions de nos pôles pour tenter de gagner des lots</p>
       <p>Parcourez le monde, récupérez les 'Bidules' et découvrez nos agences</p>
@@ -143,21 +198,21 @@
       <a id="quit" class="quit">&times;</a>
     </div>
     <div id="quizz" class="content">
-      <input id="takeQuizz" type="button" value="Take Quizz"/>
+      <a id="takeQuizz" class="button"><span class="text">Faire le quizz</span></a>
     </div>
     <div id="question" class="content">
       <h3 id="questionLibelle"></h3>
       <div>
-        <a class="reponse"><span id="reponse1" class="text"></span></a>
-        <a class="reponse"><span id="reponse2" class="text"></span></a>
-        <a class="reponse"><span id="reponse3" class="text"></span></a>
-        <a class="reponse"><span id="reponse4" class="text"></span></a>
+        <a class="reponse button"><span id="reponse1" class="text"></span></a>
+        <a class="reponse button"><span id="reponse2" class="text"></span></a>
+        <a class="reponse button"><span id="reponse3" class="text"></span></a>
+        <a class="reponse button"><span id="reponse4" class="text"></span></a>
       </div>
     </div>
     <div id="done" class="content">
       <h3>Well done !</h3>
       <div>
-        <input id="continue" type="button" value="Continue"/>
+        <a id="continue" class="button"><span class="text">Continue</span></a>
       </div>
     </div>
   </div>

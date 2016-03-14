@@ -48,7 +48,6 @@ ZenikaRPG.Game.prototype = {
 
     //  Even after the world boundary is set-up you can still toggle if the ship collides or not with this:
     // ship.body.collideWorldBounds = false;
-    this.cursors = this.game.input.keyboard.createCursorKeys();
 
     var self = this;
     var timeoutFlag;
@@ -56,15 +55,17 @@ ZenikaRPG.Game.prototype = {
     var doingQuizz = false;
 
 
-    self.ship.isAllowedToMove = true;
+    self.ship.isAllowedToMove = false;
 
-    $('#newGameButton').click(function() {
-      $('#newGame').show();
-    });
-
+    // $('#newGameButton').click(function() {
+    //   $('#newGame').show();
+    // });
+    $('#newGame').show();
     $('#startGameButton').click(function() {
+      self.cursors = self.game.input.keyboard.createCursorKeys();
       $('#newGame').hide();
       $('#newGameButton').hide();
+      $('#menu').show();
       self.ship.isAllowedToMove = true;
     });
 
@@ -89,7 +90,7 @@ ZenikaRPG.Game.prototype = {
         if (collideShip(body1, body2)) {
             if(!this.ship.uncounter[box.name]) {
               if(!doingQuizz && !isTextDisplayed) {
-                hideAll();
+                // hideAll();
                 $('#box').show();
                 $('#quizz').show();
                 $('#title').text(box.name);
@@ -102,7 +103,9 @@ ZenikaRPG.Game.prototype = {
 
                   self.ship.isAllowedToMove = true;
                   if(box) {
+                    console.log(box.name, $("#offre"+box.name))
                     self.ship.uncounter[box.name] = true;
+                    $("#offre"+box.name).addClass('done');
                   }
                   doingQuizz = false;
                   $("#continue").unbind("click");
@@ -166,7 +169,7 @@ ZenikaRPG.Game.prototype = {
                 $('#takeQuizz').bind('click', function() {
                   doingQuizz = true;
                   $('#quizz').hide();
-                  $('#done').hide();
+                  // $('#done').hide();
                   self.ship.isAllowedToMove = false;
 
                   // console.log(box.name, box.box.state, box.box.questions.length)
@@ -297,7 +300,7 @@ ZenikaRPG.Game.prototype = {
       {
         x: 1040,
         y: 1600,
-        name: "Big Data",
+        name: "BigData",
         state: 0,
         questions: []
       },
@@ -331,7 +334,7 @@ ZenikaRPG.Game.prototype = {
       {
         x: 1600,
         y: 1380,
-        name: "Craftmanship",
+        name: "Craftsmanship",
         state: 0,
         questions: []
       }
