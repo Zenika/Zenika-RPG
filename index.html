@@ -27,24 +27,46 @@
         .menu {
           color: black;
           position: absolute;
-          top: 30px;
-          right: 30px;
+          top: 5%;
+          right: 3%;
           background-color: red;
-          height: 300px;
-          width: 60px;
+          height: 80%;
+          width: 6%;
           padding: 5px;
         }
+
         .box {
-          background-color: white;
-          border: 1px solid red;
-          padding: 15px;
-          color: black;
-          width: 400px;
+          width: 30%;
+          height: 70%;
           position: absolute;
-          top: 30px;
-          left: 30px;
+          top: 5%;
+          left: 3%;
           display: none;
         }
+        .box > .header {
+          border: 1px solid red;
+          color: white;
+          background-color: red;
+          padding: 15px;
+          width: 100%;
+        }
+        .box > .header > .quit {
+          position: absolute;
+          top: 15px;
+          right: 0;
+          font-size: 50px;
+        }
+        .box > .content {
+          border: 1px solid red;
+          color: gray;
+          background-color: white;
+          padding: 15px;
+          width: 100%;
+          height: 100%;
+          display: none;
+        }
+
+
         .start {
           font-size: 20px;
           text-align: center;
@@ -98,28 +120,27 @@
   </div>
 
   <div id="box" class="box">
-    <h1 id="title"></h1>
-    <input id="takeQuizz" type="button" value="Take Quizz"/>
-  </div>
-
-  <div id="question" class="box">
-    <h1 id="title"></h1>
-    <h3 id="questionLibelle"></h3>
-    <div>
-      <input id="reponse1" type="button"/>
-      <input id="reponse2" type="button"/>
-      <input id="reponse3" type="button"/>
-      <input id="reponse4" type="button"/>
+    <div class="header">
+      <h3>Question <span id="title"></span></h3>
+      <a id="quit" class="quit">&times;</a>
     </div>
-    <div>
-      <input id="quit" type="button" value="Quit"/>
+    <div id="quizz" class="content">
+      <input id="takeQuizz" type="button" value="Take Quizz"/>
     </div>
-  </div>
-
-  <div id="continueScreen" class="box">
-    <h3>Well done !</h3>
-    <div>
-      <input id="continue" type="button" value="Continue"/>
+    <div id="question" class="content">
+      <h3 id="questionLibelle"></h3>
+      <div>
+        <input id="reponse1" type="button"/>
+        <input id="reponse2" type="button"/>
+        <input id="reponse3" type="button"/>
+        <input id="reponse4" type="button"/>
+      </div>
+    </div>
+    <div id="done" class="content">
+      <h3>Well done !</h3>
+      <div>
+        <input id="continue" type="button" value="Continue"/>
+      </div>
     </div>
   </div>
 

@@ -5,7 +5,7 @@ ZenikaRPG.Game = function(){};
 
 ZenikaRPG.Game.prototype = {
   create: function() {
-    this.DEBUG = true;
+    this.DEBUG = false;
   	//set world dimensions
 
     //background
@@ -82,14 +82,21 @@ ZenikaRPG.Game.prototype = {
             if(!this.ship.uncounter[box.name]) {
               if(!doingQuizz && !isTextDisplayed) {
                 $('#box').show();
+                $('#quizz').show();
                 $('#title').text(box.name);
 
                 isTextDisplayed = true;
 
-                var validate = function() {
+                function hideAll() {
                   $('#box').hide();
+                  $('#quizz').hide();
                   $('#question').hide();
-                  $('#continueScreen').hide();
+                  $('#done').hide();
+                }
+
+                var validate = function() {
+                  hideAll();
+
                   self.ship.isAllowedToMove = true;
                   if(box) {
                     self.ship.uncounter[box.name] = true;
@@ -98,17 +105,15 @@ ZenikaRPG.Game.prototype = {
                   $("#continue").unbind("click");
                   $("#quit").unbind("click");
                   $("#takeQuizz").unbind("click");
-                  console.log('box', box.name);
                   box = null;
                 }
 
                 function showContinue() {
                   $('#question').hide();
-                  $('#continueScreen').show();
+                  $('#done').show();
                 }
 
                 function displayQuestion(box, questions, state) {
-                  console.log('question', box.name, questions.length, state)
                   if(state >= questions.length) {
                     showContinue();
                     return;
@@ -131,7 +136,6 @@ ZenikaRPG.Game.prototype = {
                     $(reponseId).val(reponse);
 
                     $(reponseId).bind('click', function() {
-                      console.log('bind', box.name, reponseId);
                       var endTime = Date.now();
                       question.reponse = index;
                       question.duration = endTime - startTime;
@@ -142,10 +146,23 @@ ZenikaRPG.Game.prototype = {
                   });
                 }
 
+                $('#quit').bind('click', function() {
+                  hideAll();
+
+                  self.ship.isAllowedToMove = true;
+                  if(box) {
+                    self.ship.uncounter[box.name] = false;
+                  }
+                  doingQuizz = false;
+                  $("#continue").unbind("click");
+                  $("#quit").unbind("click");
+                  $("#takeQuizz").unbind("click");
+                  box = null;
+                });
 
                 $('#takeQuizz').bind('click', function() {
                   doingQuizz = true;
-                  $('#box').hide();
+                  $('#quizz').hide();
                   self.ship.isAllowedToMove = false;
 
                   // console.log(box.name, box.box.state, box.box.questions.length)
@@ -159,19 +176,6 @@ ZenikaRPG.Game.prototype = {
 
                   $('#continue').bind('click', validate);
 
-                  $('#quit').bind('click', function() {
-                    $('#box').hide();
-                    $('#question').hide();
-                    self.ship.isAllowedToMove = true;
-                    if(box) {
-                      self.ship.uncounter[box.name] = false;
-                    }
-                    doingQuizz = false;
-                    $("#continue").unbind("click");
-                    $("#quit").unbind("click");
-                    $("#takeQuizz").unbind("click");
-                    box = null;
-                  });
                 });
               }
 
