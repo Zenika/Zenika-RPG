@@ -56,7 +56,6 @@ ZenikaRPG.Game.prototype = {
     this.game.physics.p2.setPostBroadphaseCallback(function (body1, body2) {
 
         var box;
-
         if(body1.ship){
             box = body2;
         } else if(body2.ship) {
@@ -65,15 +64,25 @@ ZenikaRPG.Game.prototype = {
 
         if (collideShip(body1, body2)) {
             if(!this.ship.uncounter[box.name]) {
-              this.ship.uncounter[box.name] = true;
-              this.ship.isAllowedToMove = false;
-              button = this.game.add.button(280 - 95, 280, 'button', this.continue, this, 2, 1, 0);
-              // context.game.add.button(game.width/2, game.height/4,
-                      // 'ball', context.continue, this, 1, 0, 2);
+              $('#box').show();
+              $('#title').text(box.name);
+              // this.ship.isAllowedToMove = false;
+              var self = this;
+              $('#continue').click(function() {
+                $('#box').hide();
+                self.ship.isAllowedToMove = true;
+              });
+
+              $('#takeQuizz').click(function() {
+                self.ship.isAllowedToMove = false;
+              });
+
+
+              // self.ship.uncounter[box.name] = true;
             }
             if(!isTextDisplayed){
                 isTextDisplayed = true;
-                this.game.debug.text("Bonjour, je suis une boite !!! ("+box.name+")", 280, 280, '#efefef');
+                // this.game.debug.text("Bonjour, je suis une boite !!! ("+box.name+")", 280, 280, '#efefef');
             }
 
             if(timeoutFlag){
@@ -81,9 +90,10 @@ ZenikaRPG.Game.prototype = {
             }
             timeoutFlag = setTimeout(function () {
                 timeoutFlag = undefined;
-                this.game.debug.text("", 280, 280, '#efefef');
+                // this.game.debug.text("", 280, 280, '#efefef');
+                $('#box').hide();
                 isTextDisplayed = false;
-            }, 1000 * 1, this);
+            }, 100, this);
             return false;
         }
         return true;
@@ -127,9 +137,6 @@ ZenikaRPG.Game.prototype = {
       }
     }
 
-  },
-  continue: function() {
-    this.ship.isAllowedToMove = true;
   },
   createShip: function() {
       this.ship = this.game.add.sprite(1286, 1461, 'ship');

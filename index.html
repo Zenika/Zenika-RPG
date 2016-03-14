@@ -24,9 +24,35 @@
             background-color: #000000;
             color: #fff;
         }
+        .menu {
+          color: black;
+          position: absolute;
+          top: 30px;
+          right: 30px;
+        }
+        .box {
+          background-color: white;
+          border: 1px solid red;
+          padding: 15px;
+          color: black;
+          width: 400px;
+          height: 400px;
+          position: absolute;
+          top: 30px;
+          left: 30px;
+          display: none;
+        }
     </style>
 </head>
 <body>
+
+  <div id="menu" class="menu">Menu</div>
+
+  <div id="box" class="box">
+    <h1 id="title"></h1>
+    <input id="continue" type="button" value="Continue"/>
+    <input id="takeQuizz" type="button" value="Take Quizz"/>
+  </div>
 
   <!-- include the main game file -->
   <script src="js/main.js"></script>
