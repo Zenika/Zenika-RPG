@@ -55,6 +55,7 @@
           top: 15px;
           right: 0;
           font-size: 50px;
+          cursor: pointer;
         }
         .box > .content {
           border: 1px solid red;
@@ -65,7 +66,24 @@
           height: 100%;
           display: none;
         }
+        .box > .content .reponse {
+          margin: 2%;
+          padding: 4%;
+          width: 37%;
+          height: 50px;
+          cursor: pointer;
+          border: 1px solid red;
+          display: inline-table;
+          text-align: center;
+          vertical-align: middle;
+        }
 
+        .box > .content .reponse .text {
+          height: 50px;
+          display: table-cell;;
+          text-align: center;
+          vertical-align: middle;
+        }
 
         .start {
           font-size: 20px;
@@ -130,10 +148,10 @@
     <div id="question" class="content">
       <h3 id="questionLibelle"></h3>
       <div>
-        <input id="reponse1" type="button"/>
-        <input id="reponse2" type="button"/>
-        <input id="reponse3" type="button"/>
-        <input id="reponse4" type="button"/>
+        <a class="reponse"><span id="reponse1" class="text"></span></a>
+        <a class="reponse"><span id="reponse2" class="text"></span></a>
+        <a class="reponse"><span id="reponse3" class="text"></span></a>
+        <a class="reponse"><span id="reponse4" class="text"></span></a>
       </div>
     </div>
     <div id="done" class="content">

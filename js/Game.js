@@ -69,6 +69,14 @@ ZenikaRPG.Game.prototype = {
     });
 
 
+    function hideAll() {
+      $('#box').hide();
+      $('#quizz').hide();
+      $('#question').hide();
+      $('#done').hide();
+    }
+
+
     this.game.physics.p2.setPostBroadphaseCallback(function (body1, body2) {
 
         var box = null;
@@ -81,18 +89,13 @@ ZenikaRPG.Game.prototype = {
         if (collideShip(body1, body2)) {
             if(!this.ship.uncounter[box.name]) {
               if(!doingQuizz && !isTextDisplayed) {
+                hideAll();
                 $('#box').show();
                 $('#quizz').show();
                 $('#title').text(box.name);
 
                 isTextDisplayed = true;
 
-                function hideAll() {
-                  $('#box').hide();
-                  $('#quizz').hide();
-                  $('#question').hide();
-                  $('#done').hide();
-                }
 
                 var validate = function() {
                   hideAll();
@@ -133,7 +136,7 @@ ZenikaRPG.Game.prototype = {
                   question.reponsePossibles.forEach(function(reponse) {
                     var index = i;
                     var reponseId = '#reponse'+i;
-                    $(reponseId).val(reponse);
+                    $(reponseId).html(reponse);
 
                     $(reponseId).bind('click', function() {
                       var endTime = Date.now();
@@ -163,6 +166,7 @@ ZenikaRPG.Game.prototype = {
                 $('#takeQuizz').bind('click', function() {
                   doingQuizz = true;
                   $('#quizz').hide();
+                  $('#done').hide();
                   self.ship.isAllowedToMove = false;
 
                   // console.log(box.name, box.box.state, box.box.questions.length)
