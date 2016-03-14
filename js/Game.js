@@ -53,13 +53,27 @@ ZenikaRPG.Game.prototype = {
     var timeoutFlag;
     var isTextDisplayed = false;
 
-    var game = this.game;
-
     this.game.physics.p2.setPostBroadphaseCallback(function (body1, body2) {
+
+        var box;
+
+        if(body1.ship){
+            box = body2;
+        } else if(body2.ship) {
+            box = body1;
+        }
+
         if (collideShip(body1, body2)) {
+            if(!this.ship.uncounter[box.name]) {
+              this.ship.uncounter[box.name] = true;
+              this.ship.isAllowedToMove = false;
+              button = this.game.add.button(280 - 95, 280, 'button', this.continue, this, 2, 1, 0);
+              // context.game.add.button(game.width/2, game.height/4,
+                      // 'ball', context.continue, this, 1, 0, 2);
+            }
             if(!isTextDisplayed){
                 isTextDisplayed = true;
-                game.debug.text("Bonjour, je suis une boite !!!", 280, 280, '#efefef');
+                this.game.debug.text("Bonjour, je suis une boite !!! ("+box.name+")", 280, 280, '#efefef');
             }
 
             if(timeoutFlag){
@@ -67,9 +81,9 @@ ZenikaRPG.Game.prototype = {
             }
             timeoutFlag = setTimeout(function () {
                 timeoutFlag = undefined;
-                game.debug.text("", 280, 280, '#efefef');
+                this.game.debug.text("", 280, 280, '#efefef');
                 isTextDisplayed = false;
-            }, 1000 * 3);
+            }, 1000 * 1, this);
             return false;
         }
         return true;
@@ -97,19 +111,25 @@ ZenikaRPG.Game.prototype = {
   update: function() {
     this.ship.body.setZeroVelocity();
 
-    if (this.cursors.left.isDown) {
-        this.ship.body.moveLeft(300);
-    }
-    else if (this.cursors.right.isDown) {
-        this.ship.body.moveRight(300);
+    if(this.ship.isAllowedToMove) {
+      if (this.cursors.left.isDown) {
+          this.ship.body.moveLeft(300);
+      }
+      else if (this.cursors.right.isDown) {
+          this.ship.body.moveRight(300);
+      }
+
+      if (this.cursors.up.isDown) {
+          this.ship.body.moveUp(300);
+      }
+      else if (this.cursors.down.isDown) {
+          this.ship.body.moveDown(300);
+      }
     }
 
-    if (this.cursors.up.isDown) {
-        this.ship.body.moveUp(300);
-    }
-    else if (this.cursors.down.isDown) {
-        this.ship.body.moveDown(300);
-    }
+  },
+  continue: function() {
+    this.ship.isAllowedToMove = true;
   },
   createShip: function() {
       this.ship = this.game.add.sprite(1286, 1461, 'ship');
@@ -127,32 +147,41 @@ ZenikaRPG.Game.prototype = {
       this.ship.body.setCircle(14 * 3);
       this.ship.body.ship = true;
 
+      this.ship.isAllowedToMove = true;
+
+      this.ship.uncounter = {};
+
       this.game.camera.follow(this.ship);
   },
   createBoxes: function(){
-      this.createBox(900, 1380);
-      this.createBox(1040, 1600);
-      this.createBox(1210, 1700);
-      this.createBox(1450, 1700);
-      this.createBox(1600, 1380);
+      this.createBox(900, 1380, 'Web');
+      this.createBox(1040, 1600, 'Big Data');
+      this.createBox(1210, 1700, 'DevOps');
+      this.createBox(1450, 1700, 'Agile');
+      this.createBox(1600, 1380, 'Craftmanship');
   },
-  createBox: function(x, y) {
+  createBox: function(x, y, name) {
       block = this.game.add.sprite(x, y, 'block');
       this.game.physics.p2.enable([block], this.DEBUG);
       block.body.static = true;
       block.body.setCircle(100);
       block.body.allowGoThrow = true;
+      block.body.name = name;
 
       var block2 = this.game.add.sprite(x, y, 'block');
       this.game.physics.p2.enable([block2], this.DEBUG);
       block2.body.static = true;
+      block2.body.name = name;
+
+      this.ship.uncounter[name] = false;
+
   },
   createBalls: function() {
       var balls = this.game.add.group();
       balls.enableBody = true;
       balls.physicsBodyType = Phaser.Physics.P2JS;
 
-      for (var i = 0; i < 50; i++) {
+      for (var i = 0; i < 25; i++) {
           var ball = balls.create(this.game.world.randomX, this.game.world.randomY, 'ball');
           ball.body.setCircle(16);
       }

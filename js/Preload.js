@@ -15,9 +15,11 @@ ZenikaRPG.Preload.prototype = {
     this.load.spritesheet('ship', 'assets/humstar.png', 32, 32);
     this.load.image('ball', 'assets/shinyball.png');
     this.load.image('block', 'assets/block.png');
+
+    this.load.spritesheet('button', 'assets/button_sprite_sheet.png', 193, 71);
   },
   create: function() {
-
-  	this.state.start('MainMenu');
+    // this.state.start('MainMenu');
+  	this.state.start('Game');
   }
 };
