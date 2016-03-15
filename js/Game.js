@@ -54,12 +54,10 @@ ZenikaRPG.Game.prototype = {
     var isTextDisplayed = false;
     var doingQuizz = false;
 
-    self.ship.isAllowedToMove = false;
+    self.ship.isAllowedToMove = true;
+    self.cursors = self.game.input.keyboard.createCursorKeys();
 
-    // $('#newGameButton').click(function() {
-    //   $('#newGame').show();
-    // });
-    $('#newGame').show();
+    // $('#newGame').show();
     $('#startGameButton').click(function() {
       $('#formValidation').hide();
       var firstname = $('#inputFirstname').val();
@@ -287,6 +285,7 @@ ZenikaRPG.Game.prototype = {
     // this.showLabels();
   },
   update: function() {
+    this.game.debug.text(this.ship.body.x +" - "+this.ship.body.y, 1280, 280, '#efefef');
 
     if(this.ship.isAllowedToMove) {
 
@@ -329,7 +328,7 @@ ZenikaRPG.Game.prototype = {
 
   },
   createShip: function() {
-      this.ship = this.game.add.sprite(1286, 1461, 'ship');
+      this.ship = this.game.add.sprite(1286, 1600, 'ship');
       this.ship.scale.set(3);
       this.ship.smoothed = false;
       this.ship.animations.add('fly', [0, 1, 2, 3, 4, 5], 10, true);
@@ -383,50 +382,50 @@ ZenikaRPG.Game.prototype = {
 
     var boxes = [
       {
-        x: 900,
-        y: 1300,
+        x: 1892,
+        y: 361,
         name: "Web",
         state: 0,
         questions: questions['Web']
       },
       {
-        x: 1040,
-        y: 1600,
+        x: 2038,
+        y: 2122,
         name: "BigData",
         state: 0,
         questions: questions['BigData']
       },
       {
-        x: 1210,
-        y: 1700,
+        x: 1012,
+        y: 483,
         name: "DevOps",
         state: 0,
         questions: questions['DevOps']
       },
       {
-        x: 1450,
-        y: 1700,
+        x: 121,
+        y: 770,
         name: "Agile",
         state: 0,
         questions: questions['Agile']
       },
       {
-        x: 1600,
-        y: 1380,
+        x: 690,
+        y: 1790,
         name: "Craftsmanship",
         state: 0,
         questions: questions['Craftsmanship']
       },
       {
-        x: 800,
-        y: 1800,
+        x: 2220,
+        y: 930,
         name: "IOT",
         state: 0,
         questions: questions['IOT']
       },
       {
-        x: 1650,
-        y: 1880,
+        x: 1380,
+        y: 1382,
         name: "Java",
         state: 0,
         questions: questions['Java']
@@ -459,9 +458,26 @@ ZenikaRPG.Game.prototype = {
       balls.enableBody = true;
       balls.physicsBodyType = Phaser.Physics.P2JS;
 
-      for (var i = 0; i < 25; i++) {
-          var ball = balls.create(this.game.world.randomX, this.game.world.randomY, 'ball');
-          ball.body.setCircle(16);
-      }
+      var bs = [];
+
+      bs.push(balls.create(1013, 1606, 'ball'));
+      bs.push(balls.create(872, 813, 'ball'));
+      bs.push(balls.create(220, 988, 'ball'));
+      bs.push(balls.create(280, 1063, 'ball'));
+      bs.push(balls.create(1705, 1198, 'ball'));
+      bs.push(balls.create(1881, 502, 'ball'));
+      bs.push(balls.create(1270, 649, 'ball'));
+      bs.push(balls.create(1570, 1989, 'ball'));
+      bs.push(balls.create(277, 1822, 'ball'));
+      bs.push(balls.create(1794, 1403, 'ball'));
+
+      bs.forEach(function(ball) {
+        ball.body.setCircle(16);
+      });
+
+      // for (var i = 0; i < 25; i++) {
+      //     var ball = balls.create(this.game.world.randomX, this.game.world.randomY, 'ball');
+      //     ball.body.setCircle(16);
+      // }
   }
 };
