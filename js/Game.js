@@ -122,10 +122,14 @@ ZenikaRPG.Game.prototype = {
 
       $('#menu').hide();
       self.setPlayerScore(0);
+      self.ship.isAllowedToMove = false;
       $('#inputFirstname').val('');
       $('#inputLastname').val('');
       $('#inputEmail').val('');
       $("#menu div").removeClass("done");
+
+      $("#startGameButton").unbind("click");
+      $("#submitGame").unbind("click");
 
       self.game.state.start('Game', true, false, data.score);
     });
@@ -228,6 +232,7 @@ ZenikaRPG.Game.prototype = {
                 }
 
                 $('#quit').bind('click', function() {
+                  console.log('Quit');
                   hideAll();
 
                   self.ship.isAllowedToMove = true;
@@ -266,10 +271,13 @@ ZenikaRPG.Game.prototype = {
                clearTimeout(timeoutFlag);
             }
             timeoutFlag = setTimeout(function () {
+              if(!doingQuizz) {
+                console.log('Timeout');
                 timeoutFlag = undefined;
                 // this.game.debug.text("", 280, 280, '#efefef');
                 hideAll();
                 isTextDisplayed = false;
+              }
             }, 100, this);
             return false;
         }
@@ -296,7 +304,6 @@ ZenikaRPG.Game.prototype = {
     // this.showLabels();
   },
   update: function() {
-    // this.ship.body.setZeroVelocity();
 
     if(this.ship.isAllowedToMove) {
 
@@ -333,7 +340,9 @@ ZenikaRPG.Game.prototype = {
           }
       }
     }
-
+    else {
+      this.ship.body.setZeroVelocity();
+    }
 
   },
   createShip: function() {
