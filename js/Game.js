@@ -54,7 +54,6 @@ ZenikaRPG.Game.prototype = {
     var isTextDisplayed = false;
     var doingQuizz = false;
 
-
     self.ship.isAllowedToMove = false;
 
     // $('#newGameButton').click(function() {
@@ -95,29 +94,15 @@ ZenikaRPG.Game.prototype = {
         player: self.player,
         score: self.playerScore,
         questions: self.questions
-      }
-      var url = 'https://sheltered-brook-39954.herokuapp.com/api/game'
-      // $.ajax({
-      //   type: "POST",
-      //   url: url,
-      //   data: JSON.stringify(data),
-      //   success: function() {
-      //     // self.game.state.start('MainMenu', true, false, this.playerScore);
-      //   },
-      //   dataType: 'json',
-      //   contentType: "application/json; charset=utf-8"
-      // });
+      };
 
       $.ajax({
-        url: url,
+        url: '/api/game',
         type: 'POST',
         data: JSON.stringify(data),
         contentType: 'application/json; charset=utf-8',
         dataType: 'json',
-        async: false,
-        success: function(msg) {
-            console.log(msg);
-        }
+        success: function(msg) {}
       });
 
       $('#menu').hide();
@@ -232,7 +217,6 @@ ZenikaRPG.Game.prototype = {
                 }
 
                 $('#quit').bind('click', function() {
-                  console.log('Quit');
                   hideAll();
 
                   self.ship.isAllowedToMove = true;
@@ -272,7 +256,6 @@ ZenikaRPG.Game.prototype = {
             }
             timeoutFlag = setTimeout(function () {
               if(!doingQuizz) {
-                console.log('Timeout');
                 timeoutFlag = undefined;
                 // this.game.debug.text("", 280, 280, '#efefef');
                 hideAll();
@@ -372,79 +355,81 @@ ZenikaRPG.Game.prototype = {
     $('#score').html(this.playerScore);
   },
   createBoxes: function(){
+
+    var questions = {};
+
+    var categories = ['Web', 'DevOps', 'BigData', 'Agile', 'Craftsmanship', 'IOT', 'Java'];
+
+    categories.forEach(function(category) {
+      questions[category] = [];
+      $.getJSON("/api/questions/"+category, function(data) {
+          data.results.forEach(function(result) {
+            var question = {
+              libelle: result.libelle,
+              reponsePossibles: [],
+              bonneReponse: result.bonne_reponse
+            };
+            question.reponsePossibles.push(result.reponse_1);
+            question.reponsePossibles.push(result.reponse_2);
+            question.reponsePossibles.push(result.reponse_3);
+            question.reponsePossibles.push(result.reponse_4);
+
+            questions[category].push(question);
+          });
+        }
+      );
+    });
+
+
     var boxes = [
       {
         x: 900,
         y: 1300,
         name: "Web",
         state: 0,
-        questions: [
-          {
-            libelle: 'Quelle est le principal défaut de AngularJS (V1) ?',
-            reponsePossibles: [
-              'La productivité est faible',
-              'La communauté n\'est pas active',
-              'Le framework est trop complexe',
-              'La création de composant n\'est pas simple'
-            ],
-            bonneReponse: 4,
-            reponse: null,
-            duration: -1
-          },
-          {
-            libelle: 'Question 2 ?',
-            reponsePossibles: [
-              'Réponse 1',
-              'Réponse 2',
-              'Réponse 3',
-              'Réponse 4'
-            ],
-            bonneReponse: 3,
-            reponse: null,
-            duration: -1
-          }
-        ]
+        questions: questions['Web']
       },
       {
         x: 1040,
         y: 1600,
         name: "BigData",
         state: 0,
-        questions: []
+        questions: questions['BigData']
       },
       {
         x: 1210,
         y: 1700,
         name: "DevOps",
         state: 0,
-        questions: [
-          {
-            libelle: 'Question 1 ?',
-            reponsePossibles: [
-              'Réponse 1',
-              'Réponse 2',
-              'Réponse 3',
-              'Réponse 4'
-            ],
-            bonneReponse: 2,
-            reponse: null,
-            duration: -1
-          }
-        ]
+        questions: questions['DevOps']
       },
       {
         x: 1450,
         y: 1700,
         name: "Agile",
         state: 0,
-        questions: []
+        questions: questions['Agile']
       },
       {
         x: 1600,
         y: 1380,
         name: "Craftsmanship",
         state: 0,
-        questions: []
+        questions: questions['Craftsmanship']
+      },
+      {
+        x: 800,
+        y: 1800,
+        name: "IOT",
+        state: 0,
+        questions: questions['IOT']
+      },
+      {
+        x: 1650,
+        y: 1880,
+        name: "Java",
+        state: 0,
+        questions: questions['Java']
       }
     ];
 
