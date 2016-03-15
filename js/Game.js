@@ -96,16 +96,28 @@ ZenikaRPG.Game.prototype = {
         score: self.playerScore,
         questions: self.questions
       }
-      var url = 'http://localhost:3000/api/game'
+      var url = 'https://sheltered-brook-39954.herokuapp.com/api/game'
+      // $.ajax({
+      //   type: "POST",
+      //   url: url,
+      //   data: JSON.stringify(data),
+      //   success: function() {
+      //     // self.game.state.start('MainMenu', true, false, this.playerScore);
+      //   },
+      //   dataType: 'json',
+      //   contentType: "application/json; charset=utf-8"
+      // });
+
       $.ajax({
-        type: "POST",
         url: url,
+        type: 'POST',
         data: JSON.stringify(data),
-        success: function() {
-          // self.game.state.start('MainMenu', true, false, this.playerScore);
-        },
+        contentType: 'application/json; charset=utf-8',
         dataType: 'json',
-        contentType: "application/json; charset=utf-8"
+        async: false,
+        success: function(msg) {
+            console.log(msg);
+        }
       });
 
       $('#menu').hide();
@@ -115,7 +127,7 @@ ZenikaRPG.Game.prototype = {
       $('#inputEmail').val('');
       $("#menu div").removeClass("done");
 
-      self.game.state.start('MainMenu', true, false, data.score);
+      self.game.state.start('Game', true, false, data.score);
     });
 
     function hideAll() {
@@ -284,23 +296,44 @@ ZenikaRPG.Game.prototype = {
     // this.showLabels();
   },
   update: function() {
-    this.ship.body.setZeroVelocity();
+    // this.ship.body.setZeroVelocity();
 
     if(this.ship.isAllowedToMove) {
-      if (this.cursors.left.isDown) {
-          this.ship.body.moveLeft(300);
-      }
-      else if (this.cursors.right.isDown) {
-          this.ship.body.moveRight(300);
-      }
 
-      if (this.cursors.up.isDown) {
-          this.ship.body.moveUp(300);
+      //  only move when you click
+      if (this.game.input.mousePointer.isDown)
+      {
+          //  400 is the speed it will move towards the mouse
+          this.game.physics.arcade.moveToPointer(this.ship, 400);
+
+          //  if it's overlapping the mouse, don't move any more
+          if (Phaser.Rectangle.contains(this.ship.body, this.game.input.x, this.game.input.y))
+          {
+              // this.ship.body.velocity.setTo(0, 0);
+                this.ship.body.setZeroVelocity();
+          }
       }
-      else if (this.cursors.down.isDown) {
-          this.ship.body.moveDown(300);
+      else
+      {
+          // this.ship.body.velocity.setTo(0, 0);
+          this.ship.body.setZeroVelocity();
+
+          if (this.cursors.left.isDown) {
+              this.ship.body.moveLeft(300);
+          }
+          else if (this.cursors.right.isDown) {
+              this.ship.body.moveRight(300);
+          }
+
+          if (this.cursors.up.isDown) {
+              this.ship.body.moveUp(300);
+          }
+          else if (this.cursors.down.isDown) {
+              this.ship.body.moveDown(300);
+          }
       }
     }
+
 
   },
   createShip: function() {
