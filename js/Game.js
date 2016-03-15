@@ -14,19 +14,19 @@ ZenikaRPG.Game.prototype = {
     this.map.addTilesetImage('tileset');
     this.map.addTilesetImage('wall');
 
-    layerWall = this.map.createLayer('walls');
+    this.layerWall = this.map.createLayer('walls');
     layerGround = this.map.createLayer('ground');
 
     layerGround.resizeWorld();
 
     //  Set the tiles for collision.
     //  Do this BEFORE generating the p2 bodies below.
-    this.map.setCollision(901, true, layerWall);
+    this.map.setCollision(901, true, this.layerWall);
 
     //  Convert the tilemap layer into bodies. Only tiles that collide (see above) are created.
     //  This call returns an array of body objects which you can perform addition actions on if
     //  required. There is also a parameter to control optimising the map build.
-    this.game.physics.p2.convertTilemap(this.map, layerWall);
+    this.game.physics.p2.convertTilemap(this.map, this.layerWall);
 
     //create player
     this.createShip();
@@ -62,11 +62,26 @@ ZenikaRPG.Game.prototype = {
     // });
     $('#newGame').show();
     $('#startGameButton').click(function() {
-      self.cursors = self.game.input.keyboard.createCursorKeys();
-      $('#newGame').hide();
-      $('#newGameButton').hide();
-      $('#menu').show();
-      self.ship.isAllowedToMove = true;
+      $('#formValidation').hide();
+      var firstname = $('#inputFirstname').val();
+      var lastname = $('#inputLastname').val();
+      var email = $('#inputEmail').val();
+
+      // if(firstname && lastname && validateEmail(email)) {
+        $('#newGame').hide();
+        $('#newGameButton').hide();
+        $('#menu').show();
+        self.cursors = self.game.input.keyboard.createCursorKeys();
+        self.ship.isAllowedToMove = true;
+      // }
+      // else {
+      //   $('#formValidation').show();
+      // }
+
+      function validateEmail(email) {
+          var re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+          return re.test(email);
+      }
     });
 
 
@@ -103,7 +118,6 @@ ZenikaRPG.Game.prototype = {
 
                   self.ship.isAllowedToMove = true;
                   if(box) {
-                    console.log(box.name, $("#offre"+box.name))
                     self.ship.uncounter[box.name] = true;
                     $("#offre"+box.name).addClass('done');
                   }
@@ -146,6 +160,9 @@ ZenikaRPG.Game.prototype = {
                       question.reponse = index;
                       question.duration = endTime - startTime;
                       state = state+1;
+                      if(question.reponse === question.bonneReponse) {
+                        self.addToPlayerScore(50);
+                      }
                       displayQuestion(box, questions, state)
                     });
                     i++;
@@ -172,7 +189,6 @@ ZenikaRPG.Game.prototype = {
                   // $('#done').hide();
                   self.ship.isAllowedToMove = false;
 
-                  // console.log(box.name, box.box.state, box.box.questions.length)
                   if(box.box.state < box.box.questions.length) {
                     $('#question').show();
                     displayQuestion(box, box.box.questions, box.box.state)
@@ -249,7 +265,7 @@ ZenikaRPG.Game.prototype = {
       this.ship.play('fly');
 
       //player initial score of zero
-      this.playerScore = 0;
+      this.addToPlayerScore(0);
 
       //  Create our physics body - a 28px radius circle. Set the 'false' parameter below to 'true' to enable debugging
       this.game.physics.p2.enable(this.ship, this.DEBUG);
@@ -262,6 +278,14 @@ ZenikaRPG.Game.prototype = {
       this.ship.uncounter = {};
 
       this.game.camera.follow(this.ship);
+  },
+  addToPlayerScore: function(score) {
+    if(!this.playerScore) {
+      this.playerScore = 0;
+    }
+
+    this.playerScore += score;
+    $('#score').html(this.playerScore);
   },
   createBoxes: function(){
     var boxes = [

@@ -153,12 +153,18 @@
           padding: 15px;
           width: 100%;
         }
+
+        .form-info {
+          display: none;
+          color: red;
+        }
     </style>
 </head>
 <body>
 
   <div id="menu" class="menu">
-    Menu
+    <h4>Score</h4>
+    <span id="score"></span>
     <!-- <p><a id="newGameButton" class="button button-small"><span class="text">Nouvelle partie</span></a></p> -->
     <div id="offreJava"><img class="offre" src="assets/offres/Java.png"/></div>
     <div id="offreCraftsmanship"><img class="offre" src="assets/offres/Craftsman.png"/></div>
@@ -177,17 +183,18 @@
       <form>
         <p>
           <label for="inputFirstname">Prénom</label>
-          <input name="inputFirstname" type="text" placeholder="Prénom"/>
+          <input name="inputFirstname" id="inputFirstname" type="text" placeholder="Prénom"/>
             <label for="inputLastname">Nom</label>
-          <input name="inputLastname" type="text" placeholder="Nom"/>
+          <input name="inputLastname" id="inputLastname" type="text" placeholder="Nom"/>
             <label for="inputEmail">Email</label>
-          <input name="inputEmail" type="email" placeholder="Email"/>
+          <input name="inputEmail" id="inputEmail" type="email" placeholder="Email"/>
+        </p>
+        <p id="formValidation" class="form-info">
+          Informations saisies non valides
         </p>
         <p><a id="startGameButton" class="button button-inverse button-small"><span class="text">Commencer</span></a></p>
-
-
       </form>
-      <p>Répondez aux quuestions de nos pôles pour tenter de gagner des lots</p>
+      <p>Répondez aux questions de nos pôles pour tenter de gagner des lots</p>
       <p>Parcourez le monde, récupérez les 'Bidules' et découvrez nos agences</p>
     </div>
   </div>
