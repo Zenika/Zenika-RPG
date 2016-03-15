@@ -71,8 +71,14 @@ ZenikaRPG.Game.prototype = {
         $('#newGame').hide();
         $('#newGameButton').hide();
         $('#menu').show();
+        self.player = {
+          firstname: firstname,
+          lastname: lastname,
+          email: email
+        };
         self.cursors = self.game.input.keyboard.createCursorKeys();
         self.ship.isAllowedToMove = true;
+        self.questions = [];
       // }
       // else {
       //   $('#formValidation').show();
@@ -84,12 +90,43 @@ ZenikaRPG.Game.prototype = {
       }
     });
 
+    $('#submitGame').click(function() {
+      var data = {
+        player: self.player,
+        score: self.playerScore,
+        questions: self.questions
+      }
+      var url = 'http://localhost:3000/api/game'
+      $.ajax({
+        type: "POST",
+        url: url,
+        data: JSON.stringify(data),
+        success: function() {
+          // self.game.state.start('MainMenu', true, false, this.playerScore);
+        },
+        dataType: 'json',
+        contentType: "application/json; charset=utf-8"
+      });
+
+      $('#menu').hide();
+      self.setPlayerScore(0);
+      $('#inputFirstname').val('');
+      $('#inputLastname').val('');
+      $('#inputEmail').val('');
+      $("#menu div").removeClass("done");
+
+      self.game.state.start('MainMenu', true, false, data.score);
+    });
 
     function hideAll() {
       $('#box').hide();
       $('#quizz').hide();
       $('#question').hide();
       $('#done').hide();
+
+      $("#continue").unbind("click");
+      $("#quit").unbind("click");
+      $("#takeQuizz").unbind("click");
     }
 
 
@@ -158,10 +195,19 @@ ZenikaRPG.Game.prototype = {
                     $(reponseId).bind('click', function() {
                       var endTime = Date.now();
                       question.reponse = index;
-                      question.duration = endTime - startTime;
+                      var duration = endTime - startTime;
+                      question.duration = duration;
                       state = state+1;
+                      self.questions.push({
+                        type: box.name,
+                        index: state,
+                        libelle: question.libelle,
+                        reponse: index,
+                        bonneReponse: question.bonneReponse,
+                        tempsReponse: duration
+                      });
                       if(question.reponse === question.bonneReponse) {
-                        self.addToPlayerScore(50);
+                        self.setPlayerScore(self.playerScore + 50);
                       }
                       displayQuestion(box, questions, state)
                     });
@@ -186,7 +232,7 @@ ZenikaRPG.Game.prototype = {
                 $('#takeQuizz').bind('click', function() {
                   doingQuizz = true;
                   $('#quizz').hide();
-                  // $('#done').hide();
+                  $('#done').hide();
                   self.ship.isAllowedToMove = false;
 
                   if(box.box.state < box.box.questions.length) {
@@ -210,7 +256,7 @@ ZenikaRPG.Game.prototype = {
             timeoutFlag = setTimeout(function () {
                 timeoutFlag = undefined;
                 // this.game.debug.text("", 280, 280, '#efefef');
-                $('#box').hide();
+                hideAll();
                 isTextDisplayed = false;
             }, 100, this);
             return false;
@@ -265,7 +311,7 @@ ZenikaRPG.Game.prototype = {
       this.ship.play('fly');
 
       //player initial score of zero
-      this.addToPlayerScore(0);
+      this.setPlayerScore(0);
 
       //  Create our physics body - a 28px radius circle. Set the 'false' parameter below to 'true' to enable debugging
       this.game.physics.p2.enable(this.ship, this.DEBUG);
@@ -279,12 +325,8 @@ ZenikaRPG.Game.prototype = {
 
       this.game.camera.follow(this.ship);
   },
-  addToPlayerScore: function(score) {
-    if(!this.playerScore) {
-      this.playerScore = 0;
-    }
-
-    this.playerScore += score;
+  setPlayerScore: function(score) {
+    this.playerScore = score;
     $('#score').html(this.playerScore);
   },
   createBoxes: function(){
