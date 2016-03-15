@@ -54,17 +54,16 @@ ZenikaRPG.Game.prototype = {
     var isTextDisplayed = false;
     var doingQuizz = false;
 
-    self.ship.isAllowedToMove = true;
-    self.cursors = self.game.input.keyboard.createCursorKeys();
+    self.ship.isAllowedToMove = false;
 
-    // $('#newGame').show();
+    $('#newGame').show();
     $('#startGameButton').click(function() {
       $('#formValidation').hide();
       var firstname = $('#inputFirstname').val();
       var lastname = $('#inputLastname').val();
       var email = $('#inputEmail').val();
 
-      // if(firstname && lastname && validateEmail(email)) {
+      if(firstname && lastname && validateEmail(email)) {
         $('#newGame').hide();
         $('#newGameButton').hide();
         $('#menu').show();
@@ -76,10 +75,10 @@ ZenikaRPG.Game.prototype = {
         self.cursors = self.game.input.keyboard.createCursorKeys();
         self.ship.isAllowedToMove = true;
         self.questions = [];
-      // }
-      // else {
-      //   $('#formValidation').show();
-      // }
+      }
+      else {
+        $('#formValidation').show();
+      }
 
       function validateEmail(email) {
           var re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
@@ -285,7 +284,7 @@ ZenikaRPG.Game.prototype = {
     // this.showLabels();
   },
   update: function() {
-    this.game.debug.text(this.ship.body.x +" - "+this.ship.body.y, 1280, 280, '#efefef');
+    // this.game.debug.text(this.ship.body.x +" - "+this.ship.body.y, 1280, 280, '#efefef');
 
     if(this.ship.isAllowedToMove) {
 
