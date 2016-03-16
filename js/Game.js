@@ -17,11 +17,14 @@ ZenikaRPG.Game.prototype = {
     this.layerWall = this.map.createLayer('walls');
     layerGround = this.map.createLayer('ground');
 
-    layerGround.resizeWorld();
-
     //  Set the tiles for collision.
     //  Do this BEFORE generating the p2 bodies below.
     this.map.setCollision(901, true, this.layerWall);
+
+    this.layerWall.setScale(5,5);
+    layerGround.setScale(5,5);
+
+      layerGround.resizeWorld();
 
     //  Convert the tilemap layer into bodies. Only tiles that collide (see above) are created.
     //  This call returns an array of body objects which you can perform addition actions on if
@@ -56,7 +59,19 @@ ZenikaRPG.Game.prototype = {
 
     self.ship.isAllowedToMove = false;
 
-    $('#newGame').show();
+    if(!DEBUG){
+      $('#newGame').show();
+    }else{
+      self.player = {
+        firstname: 'test',
+        lastname: 'test',
+        email: 'email@test'
+      };
+      self.cursors = self.game.input.keyboard.createCursorKeys();
+      self.ship.isAllowedToMove = true;
+      self.questions = [];
+    }
+
     $('#startGameButton').click(function() {
       $('#formValidation').hide();
       var firstname = $('#inputFirstname').val();
@@ -284,12 +299,12 @@ ZenikaRPG.Game.prototype = {
     // this.showLabels();
   },
   update: function() {
-    // this.game.debug.text(this.ship.body.x +" - "+this.ship.body.y, 1280, 280, '#efefef');
+    //this.game.debug.text(this.game.time.fps, 50, 50, '#efefef');
 
     if(this.ship.isAllowedToMove) {
 
       //  only move when you click
-      if (this.game.input.mousePointer.isDown)
+      if (this.game.input.pointer1.isDown)
       {
           //  400 is the speed it will move towards the mouse
           this.game.physics.arcade.moveToPointer(this.ship, 400);
@@ -360,22 +375,25 @@ ZenikaRPG.Game.prototype = {
 
     categories.forEach(function(category) {
       questions[category] = [];
-      $.getJSON("/api/questions/"+category, function(data) {
-          data.results.forEach(function(result) {
-            var question = {
-              libelle: result.libelle,
-              reponsePossibles: [],
-              bonneReponse: result.bonne_reponse
-            };
-            question.reponsePossibles.push(result.reponse_1);
-            question.reponsePossibles.push(result.reponse_2);
-            question.reponsePossibles.push(result.reponse_3);
-            question.reponsePossibles.push(result.reponse_4);
 
-            questions[category].push(question);
-          });
-        }
-      );
+      if(!DEBUG){
+        $.getJSON("/api/questions/"+category, function(data) {
+            data.results.forEach(function(result) {
+              var question = {
+                libelle: result.libelle,
+                reponsePossibles: [],
+                bonneReponse: result.bonne_reponse
+              };
+              question.reponsePossibles.push(result.reponse_1);
+              question.reponsePossibles.push(result.reponse_2);
+              question.reponsePossibles.push(result.reponse_3);
+              question.reponsePossibles.push(result.reponse_4);
+
+              questions[category].push(question);
+            });
+          }
+        );
+      }
     });
 
 
