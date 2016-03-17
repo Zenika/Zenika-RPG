@@ -1,4 +1,4 @@
-create table player (id serial primary key, firstname text, lastname text, email text, score integer, submit_date timestamp);
+create table player (id serial primary key, firstname text, lastname text, email text, score integer, duration integer, submit_date timestamp);
 create table reponse (id serial primary key, f_player_id serial, type text, index integer, question text, reponse integer, bonne_reponse integer, temps_reponse integer);
 
 create table question (id serial primary key, type text, index integer, libelle text, reponse_1 text, reponse_2 text, reponse_3 text, reponse_4 text, bonne_reponse integer);

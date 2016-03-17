@@ -8,6 +8,7 @@ var gameWidth = window.innerWidth;
 var gameHeight = window.innerHeight;
 
 ZenikaRPG.game = new Phaser.Game(gameWidth, gameHeight, Phaser.AUTO, '');
+ZenikaRPG.game.antialias = false;
 
 ZenikaRPG.game.state.add('Boot', ZenikaRPG.Boot);
 ZenikaRPG.game.state.add('Preload', ZenikaRPG.Preload);
