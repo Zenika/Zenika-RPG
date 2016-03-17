@@ -12,10 +12,11 @@ ZenikaRPG.MainMenu.prototype = {
    },
   create: function() {
   	//show the space tile, repeated
+    /*
     this.background = this.game.add.tilemap('map');
     this.background.addTilesetImage('tileset');
     layerGround = this.background.createLayer('ground');
-    layerGround.resizeWorld();
+    layerGround.resizeWorld();*/
 
     // //start game text
     // var text = "Tap to begin";

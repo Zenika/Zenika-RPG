@@ -8,9 +8,13 @@ ZenikaRPG.Preload.prototype = {
   	//show loading screen
 
   	//load game assets
+    this.load.image('map', 'assets/map2.png');
+
+    /*
     this.load.tilemap('map', 'assets/map4.json', null, Phaser.Tilemap.TILED_JSON);
     this.load.image('tileset', 'assets/map4.png');
     this.load.image('wall', 'assets/wall16.png');
+*/
 
     this.load.spritesheet('ship', 'assets/humstar.png', 32, 32);
     this.load.image('ball', 'assets/shinyball.png');
