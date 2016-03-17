@@ -12,6 +12,8 @@ ZenikaRPG.Game.prototype = {
       game.physics.p2.defaultRestitution = 0.9;
 
       var map = game.add.tileSprite(0, 0, 2400, 2400, 'map');
+      map.tilePosition.x = 2072;
+      map.tilePosition.y = 1312;
       this.map = map;
       map.fixedToCamera = true;
 
@@ -286,6 +288,7 @@ console.log(DEBUG)
     // this.showLabels();
   },
   update: function() {
+    // this.game.debug.text(this.ship.body.x +" - "+this.ship.body.y+" | "+this.map.tilePosition.x +" - "+this.map.tilePosition.y, 1280, 280, '#efefef');
     //this.game.debug.text(this.game.time.fps, 50, 50, '#efefef');
     if(this.start) {
       this.remainingTime = this.totalTime - (Date.now() - this.startTime);
@@ -356,7 +359,7 @@ console.log(DEBUG)
 
   },
   createShip: function() {
-      this.ship = this.game.add.sprite(0, -1, 'ship');
+      this.ship = this.game.add.sprite(1286, 1600, 'ship');
       this.ship.scale.set(3);
       this.ship.smoothed = false;
       this.ship.animations.add('fly', [0, 1, 2, 3, 4, 5], 10, true);
