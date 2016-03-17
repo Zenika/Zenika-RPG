@@ -84,64 +84,63 @@ ZenikaRPG.Game.prototype = {
       self.questions = [];
     }
 
-    $('#startGameButton').click(function() {
-      $('#formValidation').hide();
-      var firstname = $('#inputFirstname').val();
-      var lastname = $('#inputLastname').val();
-      var email = $('#inputEmail').val();
+    if(!DEBUG){
+      $('#startGameButton').click(function() {
+        $('#formValidation').hide();
+        var firstname = $('#inputFirstname').val();
+        var lastname = $('#inputLastname').val();
+        var email = $('#inputEmail').val();
 
-      // if(firstname && lastname && validateEmail(email)) {
-        $('#newGame').hide();
-        $('#newGameButton').hide();
-        $('#menu').show();
-        self.player = {
-          firstname: firstname,
-          lastname: lastname,
-          email: email
-        };
-        self.cursors = self.game.input.keyboard.createCursorKeys();
-        self.ship.isAllowedToMove = true;
-        self.startTime = Date.now();
-        self.questions = [];
-      // }
-      // else {
-      //   $('#formValidation').show();
-      // }
+        if(firstname && lastname && validateEmail(email)) {
+          $.getJSON("/api/players/"+email, function(data) {
+              if(data.results.length === 0) {
+                $('#timer').html((this.remainingTime/1000).toFixed(1));
+                $('#newGame').hide();
+                $('#newGameButton').hide();
+                $('#menu').show();
+                self.player = {
+                  firstname: firstname,
+                  lastname: lastname,
+                  email: email
+                };
+                self.cursors = self.game.input.keyboard.createCursorKeys();
+                self.ship.isAllowedToMove = true;
+                self.start = true;
+                self.startTime = Date.now();
+                self.questions = [];
+              }
+              else {
+                $('#formValidation').show();
+              }
+            }
+          );
+        }
+        else {
+          $('#formValidation').show();
+        }
 
-      function validateEmail(email) {
+        function validateEmail(email) {
           var re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
           return re.test(email);
-      }
-    });
+        }
+      });
+    }else{
+      $('#timer').html((this.remainingTime/1000).toFixed(1));
+      $('#newGame').hide();
+      $('#newGameButton').hide();
+      $('#menu').show();
+
+      self.cursors = self.game.input.keyboard.createCursorKeys();
+      self.ship.isAllowedToMove = true;
+      self.start = true;
+      self.startTime = Date.now();
+      self.questions = [];
+    }
+
 
     $('#submitGame').click(function() {
-      var data = {
-        player: self.player,
-        score: self.playerScore,
-        questions: self.questions
-      };
-
-      $.ajax({
-        url: '/api/game',
-        type: 'POST',
-        data: JSON.stringify(data),
-        contentType: 'application/json; charset=utf-8',
-        dataType: 'json',
-        success: function(msg) {}
-      });
-
-      $('#menu').hide();
-      self.setPlayerScore(0);
-      self.ship.isAllowedToMove = false;
-      $('#inputFirstname').val('');
-      $('#inputLastname').val('');
-      $('#inputEmail').val('');
-      $("#menu div").removeClass("done");
-
-      $("#startGameButton").unbind("click");
-      $("#submitGame").unbind("click");
-
-      self.game.state.start('Game', true, false, data.score);
+      self.start = false;
+      self.submitGame(self.remainingTime);
     });
 
     function hideAll() {
@@ -312,9 +311,20 @@ ZenikaRPG.Game.prototype = {
   },
   update: function() {
     // this.game.debug.text(this.ship.body.x +" - "+this.ship.body.y, 1280, 280, '#efefef');
-    if(self.startTime) {
-      self.remainingTime = self.totalTime - (Date.now() - self.startTime);
-      $(#timer).html(self.remainingTime);
+    if(this.start) {
+      this.remainingTime = this.totalTime - (Date.now() - this.startTime);
+      $('#timer').html((this.remainingTime/1000).toFixed(1));
+      if(this.remainingTime <= 0) {
+        console.log('Should submit');
+        if(!DEBUG) {
+          this.start = false;
+          this.submitGame(this.remainingTime);
+        }
+        else {
+          this.totalTime = 1 * 60 * 1000;
+          this.startTime = Date.now();
+        }
+      }
     }
     //this.game.debug.text(this.game.time.fps, 50, 50, '#efefef');
 
@@ -513,5 +523,35 @@ ZenikaRPG.Game.prototype = {
       //     var ball = balls.create(this.game.world.randomX, this.game.world.randomY, 'ball');
       //     ball.body.setCircle(16);
       // }
+  },
+  submitGame: function(remainingTime) {
+    var data = {
+      player: this.player,
+      score: this.playerScore,
+      time: remainingTime,
+      questions: this.questions
+    };
+
+    $.ajax({
+      url: '/api/game',
+      type: 'POST',
+      data: JSON.stringify(data),
+      contentType: 'application/json; charset=utf-8',
+      dataType: 'json',
+      success: function(msg) {}
+    });
+
+    $('#menu').hide();
+    this.setPlayerScore(0);
+    this.ship.isAllowedToMove = false;
+    $('#inputFirstname').val('');
+    $('#inputLastname').val('');
+    $('#inputEmail').val('');
+    $("#menu div").removeClass("done");
+
+    $("#startGameButton").unbind("click");
+    $("#submitGame").unbind("click");
+
+    this.game.state.start('Game', true, false, data.score);
   }
 };
