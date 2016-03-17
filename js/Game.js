@@ -311,15 +311,12 @@ ZenikaRPG.Game.prototype = {
     // this.showLabels();
   },
   update: function() {
-<<<<<<< HEAD
     // this.game.debug.text(this.ship.body.x +" - "+this.ship.body.y, 1280, 280, '#efefef');
     if(self.startTime) {
       self.remainingTime = self.totalTime - (Date.now() - self.startTime);
       $(#timer).html(self.remainingTime);
     }
-=======
     //this.game.debug.text(this.game.time.fps, 50, 50, '#efefef');
->>>>>>> 60eb4debe375a718fa839dc2c656b05ef05346a6
 
     if(this.ship.isAllowedToMove) {
 
