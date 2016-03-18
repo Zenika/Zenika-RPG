@@ -569,7 +569,7 @@ ZenikaRPG.Game.prototype = {
       // }
   },
   createWalls: function() {
-    maisonJava = this.game.add.sprite(this.game.world.centerX, this.game.world.centerY, 'wall');
+    maisonJava = this.game.add.sprite(0, 0, 'wall');
     maisonJava.alpha = 0;
     this.game.physics.p2.enable(maisonJava, this.DEBUG);
     maisonJava.body.clearShapes();
@@ -577,8 +577,8 @@ ZenikaRPG.Game.prototype = {
     maisonJava.body.fixedRotation = true;
     // maison Java
     maisonJava.body.addPolygon( {} , [
-      [-160, -215] , [-125, -245] , [-45, -245] , [-25, -275] ,  [100, -275] ,  [120, -245] ,  [215, -245] ,  [240, -215] ,
-      [240, 110] ,  [220, 130] ,  [140, 130] ,  [120, 150] ,  [-30, 150] ,  [-50, 130] ,  [-140, 130], [-160, 110] ]);
+      [1040, 985] , [1075, 955] , [1155, 955] , [1175, 925] ,  [1300, 925] ,  [1320, 955] ,  [1415, 955] ,  [1440, 985] ,
+      [1440, 1310] ,  [1420, 1330] ,  [1340, 1330] ,  [1320, 1350] ,  [1170, 1350] ,  [1150, 1330] ,  [1060, 1330], [1040, 1310] ]);
     maisonJava.body.setCollisionGroup(this.wallCollisionGroup);
     maisonJava.body.collides([this.boxCollisionGroup, this.ballCollisionGroup, this.playerCollisionGroup, this.wallCollisionGroup]);
 
@@ -731,7 +731,7 @@ ZenikaRPG.Game.prototype = {
       [1610, 500] , [1720, 500] ,
       [1730, 580] , [2280, 580] ,
       [2280, 630] , [1740, 630] ,
-      [1710, 620] , [1690, 590] , 
+      [1710, 620] , [1690, 590] ,
       [1690, 550] , [1610, 550]
      ]);
     maisonWebRightBorder.body.setCollisionGroup(this.wallCollisionGroup);
