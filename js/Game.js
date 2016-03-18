@@ -558,7 +558,8 @@ ZenikaRPG.Game.prototype = {
       // }
   },
   createWalls: function() {
-    contra = this.game.add.sprite(this.game.world.centerX-50, this.game.world.centerY-50, 'map');
+    contra = this.game.add.sprite(this.game.world.centerX, this.game.world.centerY, 'wall16');
+    contra.alpha = 0;
 
     this.game.physics.p2.enable(contra, this.DEBUG);
     contra.body.clearShapes();
@@ -566,7 +567,9 @@ ZenikaRPG.Game.prototype = {
     contra.body.static = true;
     contra.body.fixedRotation = true;
 
-    contra.body.addPolygon( {} ,    -0, 0  ,  100, 0  ,  100, 100  ,  0, 100  );
+    contra.body.addPolygon( {} ,
+      -160, -215 , -125, -245 , -45, -245 , -25, -275 ,  100, -275 ,  120, -245 ,  215, -245 ,  240, -215 ,
+      240, 110 ,  220, 130 ,  140, 130 ,  120, 150 ,  -30, 150 ,  -50, 130 ,  -140, 130,  -160, 110  );
 
     contra.body.setCollisionGroup(this.wallCollisionGroup);
     contra.body.collides([this.boxCollisionGroup, this.ballCollisionGroup, this.playerCollisionGroup, this.wallCollisionGroup]);
