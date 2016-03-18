@@ -5,17 +5,18 @@ ZenikaRPG.Game = function(){};
 
 ZenikaRPG.Game.prototype = {
   create: function() {
-      var game = this.game;
-      game.world.setBounds(0, 0, 2400, 2400);
+    var game = this.game;
+    game.world.setBounds(0, 0, 2400, 2400);
 
-      game.physics.startSystem(Phaser.Physics.P2JS);
-      game.physics.p2.defaultRestitution = 0.9;
+    game.physics.startSystem(Phaser.Physics.P2JS);
+    game.physics.p2.defaultRestitution = 0.9;
 
-      var map = game.add.tileSprite(0, 0, 2400, 2400, 'map');
-      map.tilePosition.x = 2072;
-      map.tilePosition.y = 1312;
-      this.map = map;
-      map.fixedToCamera = true;
+    var map = game.add.tileSprite(0, 0, 2400, 2400, 'map');
+    // map.tilePosition.x = 2072;
+    // map.tilePosition.y = 1314;
+
+    this.map = map;
+    map.fixedToCamera = true;
 
     //create player
     this.createShip();
@@ -47,7 +48,7 @@ ZenikaRPG.Game.prototype = {
     self.remainingTime = self.totalTime;
     self.start = false;
     self.ship.isAllowedToMove = false;
-console.log(DEBUG)
+
     if(!DEBUG){
       $('#newGame').show();
     }else{
@@ -334,6 +335,7 @@ console.log(DEBUG)
           }
 
           if (this.cursors.up.isDown) {
+            console.log(this.game.width, this.game.height)
               this.ship.body.moveUp(300);
           }
           else if (this.cursors.down.isDown) {
@@ -342,14 +344,17 @@ console.log(DEBUG)
 
 
 
+
           if (!this.game.camera.atLimit.x)
           {
-              this.map.tilePosition.x -= (this.ship.body.velocity.x * this.game.time.physicsElapsed);
+              this.map.tilePosition.x = -(this.ship.body.x)+(this.game.width/2)
+          }
+          else {
           }
 
           if (!this.game.camera.atLimit.y)
           {
-              this.map.tilePosition.y -= (this.ship.body.velocity.y * this.game.time.physicsElapsed);
+              this.map.tilePosition.y = -(this.ship.body.y)+(this.game.height/2);
           }
       }
     }
@@ -359,7 +364,7 @@ console.log(DEBUG)
 
   },
   createShip: function() {
-      this.ship = this.game.add.sprite(1286, 1600, 'ship');
+      this.ship = this.game.add.sprite(0, 0, 'ship');
       this.ship.scale.set(3);
       this.ship.smoothed = false;
       this.ship.animations.add('fly', [0, 1, 2, 3, 4, 5], 10, true);
