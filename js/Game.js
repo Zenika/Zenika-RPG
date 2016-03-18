@@ -5,11 +5,26 @@ ZenikaRPG.Game = function(){};
 
 ZenikaRPG.Game.prototype = {
   create: function() {
+    this.DEBUG = true;
+
     var game = this.game;
     game.world.setBounds(0, 0, 2400, 2400);
 
     game.physics.startSystem(Phaser.Physics.P2JS);
     game.physics.p2.defaultRestitution = 0.9;
+    game.physics.p2.setImpactEvents(true);
+    game.physics.p2.restitution = 0.8;
+
+    //  Create our collision groups. One for the player, one for the pandas
+    this.playerCollisionGroup = game.physics.p2.createCollisionGroup();
+    this.ballCollisionGroup = game.physics.p2.createCollisionGroup();
+    this.boxCollisionGroup = game.physics.p2.createCollisionGroup();
+    this.wallCollisionGroup = game.physics.p2.createCollisionGroup();
+
+    //  This part is vital if you want the objects with their own collision groups to still collide with the world bounds
+    //  (which we do) - what this does is adjust the bounds to use its own collision group.
+    game.physics.p2.updateBoundsCollisionGroup();
+
 
     var map = game.add.tileSprite(0, 0, 2400, 2400, 'map');
     // map.tilePosition.x = 2072;
@@ -18,6 +33,8 @@ ZenikaRPG.Game.prototype = {
     this.map = map;
     map.fixedToCamera = true;
 
+
+        this.createWalls();
     //create player
     this.createShip();
 
@@ -31,10 +48,10 @@ ZenikaRPG.Game.prototype = {
     //  line does that. The first 4 parameters control if you need a boundary on the left, right, top and bottom of your world.
     //  The final parameter (false) controls if the boundary should use its own collision group or not. In this case we don't require
     //  that, so it's set to false. But if you had custom collision groups set-up then you would need this set to true.
-    this.game.physics.p2.setBoundsToWorld(true, true, true, true, false);
+    // this.game.physics.p2.setBoundsToWorld(true, true, true, true, false);
 
     //  And before this will happen, we need to turn on impact events for the world
-    this.game.physics.p2.setImpactEvents(true);
+    // this.game.physics.p2.setImpactEvents(true);
 
     //  Even after the world boundary is set-up you can still toggle if the ship collides or not with this:
     // ship.body.collideWorldBounds = false;
@@ -48,6 +65,11 @@ ZenikaRPG.Game.prototype = {
     self.remainingTime = self.totalTime;
     self.start = false;
     self.ship.isAllowedToMove = false;
+
+
+        $('body').bind('click', function() {
+          console.log('pos', self.ship.body.x, '-', self.ship.body.y);
+        });
 
     if(!DEBUG){
       $('#newGame').show();
@@ -310,7 +332,7 @@ ZenikaRPG.Game.prototype = {
     if(this.ship.isAllowedToMove) {
 
       //  only move when you click
-      if (this.game.input.pointer1.isDown)
+      if (this.game.input.activePointer.isDown)
       {
           //  400 is the speed it will move towards the mouse
           this.game.physics.arcade.moveToPointer(this.ship, 400);
@@ -335,27 +357,23 @@ ZenikaRPG.Game.prototype = {
           }
 
           if (this.cursors.up.isDown) {
-            console.log(this.game.width, this.game.height)
               this.ship.body.moveUp(300);
           }
           else if (this.cursors.down.isDown) {
               this.ship.body.moveDown(300);
           }
+      }
 
+      if (!this.game.camera.atLimit.x)
+      {
+          this.map.tilePosition.x = -(this.ship.body.x)+(this.game.width/2)
+      }
+      else {
+      }
 
-
-
-          if (!this.game.camera.atLimit.x)
-          {
-              this.map.tilePosition.x = -(this.ship.body.x)+(this.game.width/2)
-          }
-          else {
-          }
-
-          if (!this.game.camera.atLimit.y)
-          {
-              this.map.tilePosition.y = -(this.ship.body.y)+(this.game.height/2);
-          }
+      if (!this.game.camera.atLimit.y)
+      {
+          this.map.tilePosition.y = -(this.ship.body.y)+(this.game.height/2);
       }
     }
     else {
@@ -364,7 +382,7 @@ ZenikaRPG.Game.prototype = {
 
   },
   createShip: function() {
-      this.ship = this.game.add.sprite(0, 0, 'ship');
+      this.ship = this.game.add.sprite(1240, 1600, 'ship');
       this.ship.scale.set(3);
       this.ship.smoothed = false;
       this.ship.animations.add('fly', [0, 1, 2, 3, 4, 5], 10, true);
@@ -378,6 +396,14 @@ ZenikaRPG.Game.prototype = {
 
       this.ship.body.setCircle(14 * 3);
       this.ship.body.ship = true;
+      //  Set the ships collision group
+      this.ship.body.setCollisionGroup(this.playerCollisionGroup);
+
+      this.ship.body.collides(this.ballCollisionGroup, function(body1, body2) {}, this);
+
+      this.ship.body.collides(this.boxCollisionGroup, function(body1, body2) {}, this);
+
+      this.ship.body.collides(this.wallCollisionGroup, function(body1, body2) {console.log('wall')}, this);
 
       this.ship.isAllowedToMove = false;
 
@@ -481,6 +507,7 @@ ZenikaRPG.Game.prototype = {
       this.game.physics.p2.enable([block], this.DEBUG);
       block.body.static = true;
       block.body.setCircle(100);
+
       block.body.allowGoThrow = true;
       block.body.name = box.name;
       block.body.box = box;
@@ -488,12 +515,15 @@ ZenikaRPG.Game.prototype = {
       var block2 = this.game.add.sprite(x, y, 'block');
       this.game.physics.p2.enable([block2], this.DEBUG);
       block2.body.static = true;
+      block2.body.setCollisionGroup(this.boxCollisionGroup);
+      block2.body.collides([this.boxCollisionGroup, this.ballCollisionGroup, this.playerCollisionGroup]);
 
       this.ship.uncounter[name] = false;
 
   },
   createBalls: function() {
       var balls = this.game.add.group();
+
       balls.enableBody = true;
       balls.physicsBodyType = Phaser.Physics.P2JS;
 
@@ -510,14 +540,55 @@ ZenikaRPG.Game.prototype = {
       bs.push(balls.create(277, 1822, 'ball'));
       bs.push(balls.create(1794, 1403, 'ball'));
 
+
       bs.forEach(function(ball) {
         ball.body.setCircle(16);
-      });
+        //  Tell the panda to use the pandaCollisionGroup
+        ball.body.setCollisionGroup(this.ballCollisionGroup);
+
+        //  Pandas will collide against themselves and the player
+        //  If you don't set this they'll not collide with anything.
+        //  The first parameter is either an array or a single collision group.
+        ball.body.collides([this.boxCollisionGroup, this.ballCollisionGroup, this.playerCollisionGroup, this.wallCollisionGroup]);
+      }, this);
 
       // for (var i = 0; i < 25; i++) {
       //     var ball = balls.create(this.game.world.randomX, this.game.world.randomY, 'ball');
       //     ball.body.setCircle(16);
       // }
+  },
+  createWalls: function() {
+    contra = this.game.add.sprite(this.game.world.centerX-50, this.game.world.centerY-50, 'map');
+
+    this.game.physics.p2.enable(contra, this.DEBUG);
+    contra.body.clearShapes();
+
+    contra.body.static = true;
+    contra.body.fixedRotation = true;
+
+    contra.body.addPolygon( {} ,    -0, 0  ,  100, 0  ,  100, 100  ,  0, 100  );
+
+    contra.body.setCollisionGroup(this.wallCollisionGroup);
+    contra.body.collides([this.boxCollisionGroup, this.ballCollisionGroup, this.playerCollisionGroup, this.wallCollisionGroup]);
+
+    // var walls = this.game.add.group();
+    // walls.enableBody = true;
+    // walls.physicsBodyType = Phaser.Physics.P2JS;
+    // // walls.body.setCollisionGroup(this.ballCollisionGroup);
+    //
+    // poly = new Phaser.Polygon(new Phaser.Point(200, 100), new Phaser.Point(350, 100), new Phaser.Point(375, 200), new Phaser.Point(150, 200));
+    //
+    // graphics = this.game.add.graphics(1300, 1600);
+    // walls.add(graphics);
+    // graphics.body.setCollisionGroup(this.wallCollisionGroup);
+    // graphics.beginFill(0xFF33ff);
+    // graphics.drawPolygon(poly.points);
+    // graphics.endFill();
+    // this.game.physics.p2.enable([graphics], this.DEBUG);
+    //
+    // graphics.body.collides([this.boxCollisionGroup, this.ballCollisionGroup, this.playerCollisionGroup, this.wallCollisionGroup]);
+    //
+    // console.log(this.wallCollisionGroup, poly);
   },
   submitGame: function(remainingTime) {
     var data = {
@@ -548,5 +619,8 @@ ZenikaRPG.Game.prototype = {
     $("#submitGame").unbind("click");
 
     this.game.state.start('Game', true, false, data.score);
+  },
+  render: function() {
+    // this.game.debug.text(this.ship.body.x +" - "+this.ship.body.y+" | "+this.map.tilePosition.x +" - "+this.map.tilePosition.y, 1280, 280, '#efefef');
   }
 };
