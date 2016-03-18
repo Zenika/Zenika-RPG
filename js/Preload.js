@@ -16,6 +16,7 @@ ZenikaRPG.Preload.prototype = {
     this.load.image('wall', 'assets/wall16.png');
 */
 
+this.load.image('wall', 'assets/wall16.png');
     this.load.spritesheet('ship', 'assets/humstar.png', 32, 32);
     this.load.image('ball', 'assets/shinyball.png');
     this.load.image('block', 'assets/block.png');
