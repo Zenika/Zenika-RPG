@@ -2,7 +2,7 @@ var ZenikaRPG = ZenikaRPG || {};
 
 var IDE_HOOK = false;
 var VERSION = '2.4.4';
-var DEBUG = true;
+var DEBUG = false;
 
 var gameWidth = window.innerWidth;
 var gameHeight = window.innerHeight;
