@@ -202,7 +202,6 @@ ZenikaRPG.Game.prototype = {
 
                   if(self.questions.length === 10) {
                     self.start = false;
-                    console.log(self.remainingTime);
                     self.submitGame(self.remainingTime);
                   }
                 }
@@ -577,7 +576,7 @@ ZenikaRPG.Game.prototype = {
       // }
   },
   submitGame: function(remainingTime) {
-    console.log('Submit', remainingTime)
+    // console.log('Submit', remainingTime)
     var data = {
       player: this.player,
       score: this.playerScore,

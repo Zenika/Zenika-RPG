@@ -23,12 +23,13 @@ app.post('/api/game', function(request, response){
 
   pg.connect(process.env.DATABASE_URL, function(err, client, done) {
     client.query(
-      'INSERT into player (firstname, lastname, email, score, submit_date) VALUES($1, $2, $3, $4, CURRENT_TIMESTAMP) RETURNING id',
+      'INSERT into player (firstname, lastname, email, score, submit_date, duration) VALUES($1, $2, $3, $4, CURRENT_TIMESTAMP, $5) RETURNING id',
       [
         data.player.firstname,
         data.player.lastname,
         data.player.email,
-        data.score
+        data.score,
+        data.time
       ],
       function(err, result) {
         if (err) {
