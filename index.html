@@ -160,6 +160,10 @@
           display: none;
           color: red;
         }
+
+        .time-limit {
+          font-weight: bold;
+        }
     </style>
 </head>
 <body>
@@ -225,6 +229,20 @@
       <div>
         <a id="continue" class="button"><span class="text">Continue</span></a>
       </div>
+    </div>
+  </div>
+
+  <div id="confirmation" class="start">
+    <div class="header">
+      <h3>Questionnaire validé</h3>
+    </div>
+    <div class="content">
+        <p id="noTime">Le temps est écoulé</p>
+        <p>
+          Vos réponses ont bien été pris en compte.
+          Merci de votre participation.
+        </p>
+        <p><a id="endGameButton" class="button button-inverse button-small"><span class="text">Terminer</span></a></p>
     </div>
   </div>
 

@@ -36,8 +36,6 @@ ZenikaRPG.Game.prototype = {
     this.createWalls();
     //create player
     this.createShip();
-    // this.map.tilePosition.x = -(this.ship.body.x)+(this.game.width/2);
-    // this.map.tilePosition.y = -(this.ship.body.y)+(this.game.height/2);
 
     //generate game elements
     this.createBalls();
@@ -62,7 +60,7 @@ ZenikaRPG.Game.prototype = {
     var isTextDisplayed = false;
     var doingQuizz = false;
 
-    self.totalTime = 1 * 60 * 1000;
+    self.totalTime = 1 * 15 * 1000;
     self.remainingTime = self.totalTime;
     self.start = false;
     self.ship.isAllowedToMove = false;
@@ -323,6 +321,9 @@ ZenikaRPG.Game.prototype = {
     if(this.start) {
       this.remainingTime = this.totalTime - (Date.now() - this.startTime);
       $('#timer').html((this.remainingTime/1000).toFixed(1));
+      if(this.remainingTime <= 10*1000) {
+        $('#timer').addClass('time-limit');
+      }
       if(this.remainingTime <= 0) {
         // console.log('Should submit');
         if(!DEBUG) {
@@ -592,7 +593,18 @@ ZenikaRPG.Game.prototype = {
     $("#startGameButton").unbind("click");
     $("#submitGame").unbind("click");
 
-    this.game.state.start('Game', true, false, data.score);
+    $("#confirmation").show();
+    if(remainingTime !== 0) {
+      $("#noTime").hide();
+    }
+
+    var self = this;
+
+    $("#endGameButton").bind("click", function() {
+      $("#endGameButton").unbind("click");
+      $("#confirmation").hide();
+      self.game.state.start('Game', true, false, data.score);
+    });
   },
   render: function() {
     // this.game.debug.text(this.ship.body.x +" - "+this.ship.body.y+" | "+this.map.tilePosition.x +" - "+this.map.tilePosition.y, 1280, 280, '#efefef');
