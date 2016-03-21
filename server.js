@@ -17,7 +17,7 @@ app.get('/test', function(request, response){
 });
 
 app.use('/', express.static('.'));
-/*
+
 app.post('/api/game', function(request, response){
   var data = request.body;
 
@@ -116,7 +116,7 @@ app.get('/db/questions', function (request, response) {
     });
   });
 });
-*/
+
 app.listen(port, function () {
   console.log('App listening on port '+port+'!');
 });

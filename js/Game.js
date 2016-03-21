@@ -345,7 +345,7 @@ ZenikaRPG.Game.prototype = {
       //  only move when you click
       if (this.game.input.activePointer.isDown)
       {
-        console.log('['+(parseFloat(this.game.input.mousePointer.x)+(-parseFloat(this.map.tilePosition.x))).toFixed(0)+', '+(parseFloat(this.game.input.mousePointer.y)+(-parseFloat(this.map.tilePosition.y))).toFixed(0)+'] , ');
+        // console.log('['+(parseFloat(this.game.input.mousePointer.x)+(-parseFloat(this.map.tilePosition.x))).toFixed(0)+', '+(parseFloat(this.game.input.mousePointer.y)+(-parseFloat(this.map.tilePosition.y))).toFixed(0)+'] , ');
           //  400 is the speed it will move towards the mouse
           // this.game.physics.arcade.moveToPointer(this.ship, 400);
 
@@ -415,7 +415,7 @@ ZenikaRPG.Game.prototype = {
 
       this.ship.body.collides(this.boxCollisionGroup, function(body1, body2) {}, this);
 
-      this.ship.body.collides(this.wallCollisionGroup, function(body1, body2) {console.log('wall')}, this);
+      this.ship.body.collides(this.wallCollisionGroup, function(body1, body2) { /*console.log('wall')*/ }, this);
 
       this.ship.isAllowedToMove = false;
 
