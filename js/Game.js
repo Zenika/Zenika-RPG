@@ -199,6 +199,11 @@ ZenikaRPG.Game.prototype = {
                   $("#quit").unbind("click");
                   $("#takeQuizz").unbind("click");
                   box = null;
+
+                  if(self.questions.length === 10) {
+                    self.start = false;
+                    self.submitGame(self.remainingTime);
+                  }
                 }
 
                 function showContinue() {
