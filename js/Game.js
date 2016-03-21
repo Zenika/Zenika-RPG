@@ -237,7 +237,7 @@ ZenikaRPG.Game.prototype = {
                       });
                       if(question.reponse === question.bonneReponse) {
                         self.setPlayerScore(self.playerScore + 50);
-                        self.totalTime += (10 * 1000 * (1 + 1 / duration);
+                        self.totalTime += (10 * 1000) * (1 + 1 / duration);
                       }
                       displayQuestion(box, questions, state)
                     });
