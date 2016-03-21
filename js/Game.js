@@ -60,7 +60,7 @@ ZenikaRPG.Game.prototype = {
     var isTextDisplayed = false;
     var doingQuizz = false;
 
-    self.totalTime = 1 * 15 * 1000;
+    self.totalTime = 1 * 60 * 1000;
     self.remainingTime = self.totalTime;
     self.start = false;
     self.ship.isAllowedToMove = false;
@@ -237,7 +237,7 @@ ZenikaRPG.Game.prototype = {
                       });
                       if(question.reponse === question.bonneReponse) {
                         self.setPlayerScore(self.playerScore + 50);
-                        self.totalTime += 10 * 1000;
+                        self.totalTime += (10 * 1000 * (1 + 1 / duration);
                       }
                       displayQuestion(box, questions, state)
                     });
@@ -328,7 +328,7 @@ ZenikaRPG.Game.prototype = {
         // console.log('Should submit');
         if(!DEBUG) {
           this.start = false;
-          this.submitGame(this.remainingTime);
+          this.submitGame(0);
         }
         else {
           this.totalTime = 1 * 60 * 1000;
@@ -594,7 +594,10 @@ ZenikaRPG.Game.prototype = {
     $("#submitGame").unbind("click");
 
     $("#confirmation").show();
-    if(remainingTime !== 0) {
+    if(remainingTime === 0) {
+      $("#noTime").show();
+    }
+    else {
       $("#noTime").hide();
     }
 
