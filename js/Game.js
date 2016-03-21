@@ -202,6 +202,7 @@ ZenikaRPG.Game.prototype = {
 
                   if(self.questions.length === 10) {
                     self.start = false;
+                    console.log(self.remainingTime);
                     self.submitGame(self.remainingTime);
                   }
                 }
@@ -249,6 +250,7 @@ ZenikaRPG.Game.prototype = {
                       });
                       if(question.reponse === question.bonneReponse) {
                         self.setPlayerScore(self.playerScore + 50);
+                        self.totalTime += 10 * 1000;
                       }
                       displayQuestion(box, questions, state)
                     });
@@ -575,6 +577,7 @@ ZenikaRPG.Game.prototype = {
       // }
   },
   submitGame: function(remainingTime) {
+    console.log('Submit', remainingTime)
     var data = {
       player: this.player,
       score: this.playerScore,
