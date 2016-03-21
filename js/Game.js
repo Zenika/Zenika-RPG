@@ -428,6 +428,18 @@ ZenikaRPG.Game.prototype = {
       this.ship.uncounter = {};
 
       this.game.camera.follow(this.ship);
+      
+      if (!this.game.camera.atLimit.x)
+      {
+          this.map.tilePosition.x = -(this.ship.body.x)+(this.game.width/2)
+      }
+      else {
+      }
+
+      if (!this.game.camera.atLimit.y)
+      {
+          this.map.tilePosition.y = -(this.ship.body.y)+(this.game.height/2);
+      }
   },
   setPlayerScore: function(score) {
     this.playerScore = score;
