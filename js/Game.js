@@ -5,7 +5,7 @@ ZenikaRPG.Game = function(){};
 
 ZenikaRPG.Game.prototype = {
   create: function() {
-    this.DEBUG = true;
+    this.DEBUG = DEBUG;
 
     var game = this.game;
     game.world.setBounds(0, 0, 2400, 2400);
@@ -139,7 +139,7 @@ ZenikaRPG.Game.prototype = {
       $('#timer').html((this.remainingTime/1000).toFixed(1));
       $('#newGame').hide();
       $('#newGameButton').hide();
-      // $('#menu').show();
+      $('#menu').show();
 
       self.cursors = self.game.input.keyboard.createCursorKeys();
       self.ship.isAllowedToMove = true;
@@ -790,7 +790,7 @@ ZenikaRPG.Game.prototype = {
     element = this.game.add.sprite(0, 0, 'wall');
     this.game.physics.p2.enable(element, this.DEBUG);
     element.body.addPolygon( {} , [
-      [2002, 632] , 
+      [2002, 632] ,
       [2237, 631] ,
       [2238, 846] ,
       [2208, 867] ,
