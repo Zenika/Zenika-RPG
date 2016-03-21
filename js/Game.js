@@ -353,7 +353,7 @@ ZenikaRPG.Game.prototype = {
       {
         // console.log('['+(parseFloat(this.game.input.mousePointer.x)+(-parseFloat(this.map.tilePosition.x))).toFixed(0)+', '+(parseFloat(this.game.input.mousePointer.y)+(-parseFloat(this.map.tilePosition.y))).toFixed(0)+'] , ');
           //  400 is the speed it will move towards the mouse
-          // this.game.physics.arcade.moveToPointer(this.ship, 400);
+          this.game.physics.arcade.moveToPointer(this.ship, 400);
 
           //  if it's overlapping the mouse, don't move any more
           if (Phaser.Rectangle.contains(this.ship.body, this.game.input.x, this.game.input.y))
