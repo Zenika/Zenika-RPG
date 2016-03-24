@@ -65,10 +65,7 @@ ZenikaRPG.Game.prototype = {
     self.start = false;
     self.ship.isAllowedToMove = false;
 
-
-        $('body').bind('click', function() {
-          // console.log('pos', self.ship.body.x, '-', self.ship.body.y);
-        });
+    $('#timer').hide();
 
     if(!DEBUG){
       $('#newGame').show();
@@ -93,6 +90,7 @@ ZenikaRPG.Game.prototype = {
         if(firstname && lastname && validateEmail(email)) {
           $.getJSON("/api/players/"+email, function(data) {
               if(data.results.length === 0) {
+                $('#timer').show();
                 $('#timer').html((this.remainingTime/1000).toFixed(1));
                 $('#newGame').hide();
                 $('#newGameButton').hide();
@@ -582,6 +580,7 @@ ZenikaRPG.Game.prototype = {
       success: function(msg) {}
     });
 
+    $('#timer').hide();
     $('#menu').hide();
     this.setPlayerScore(0);
     this.ship.isAllowedToMove = false;

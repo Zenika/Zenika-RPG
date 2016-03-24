@@ -162,15 +162,33 @@
         }
 
         .time-limit {
-          font-weight: bold;
+          color: red;
+          font-size: 36px;
+          /*font-weight: bold;*/
+        }
+
+        .time {
+          position: absolute;
+          top: 8%;
+          right: 0%;
+          font-size: 28px;
+          color: white;
+          text-shadow: 1px 1px 1px #000000;
+          /*height: 80%;*/
+          width: 100%;
+          padding: 5px;
+          text-align: center;
         }
     </style>
 </head>
 <body>
 
+  <div class="time">
+    <p id="timer"></p>
+  </div>
+
   <div id="menu" class="menu">
     <h4>Score</h4>
-    <p id="timer"></p>
     <p id="score"></p>
     <!-- <p><a id="newGameButton" class="button button-small"><span class="text">Nouvelle partie</span></a></p> -->
     <div id="offreJava"><img class="offre" src="assets/offres/Java.png"/></div>

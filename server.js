@@ -22,6 +22,9 @@ app.post('/api/game', function(request, response){
   var data = request.body;
 
   pg.connect(process.env.DATABASE_URL, function(err, client, done) {
+    if(!client) {
+      return;
+    }
     client.query(
       'INSERT into player (firstname, lastname, email, score, submit_date, duration) VALUES($1, $2, $3, $4, CURRENT_TIMESTAMP, $5) RETURNING id',
       [
@@ -71,6 +74,9 @@ app.post('/api/game', function(request, response){
 
 app.get('/api/questions/:type', function (request, response) {
   pg.connect(process.env.DATABASE_URL, function(err, client, done) {
+    if(!client) {
+      return;
+    }
     client.query('SELECT * FROM question where type=($1)', [request.params.type], function(err, result) {
       done();
       if (err)
@@ -82,6 +88,9 @@ app.get('/api/questions/:type', function (request, response) {
 });
 
 app.get('/api/players/:email', function (request, response) {
+  if(!client) {
+    return;
+  }
   pg.connect(process.env.DATABASE_URL, function(err, client, done) {
     client.query('SELECT * FROM player where email=($1)', [request.params.email], function(err, result) {
       done();
@@ -95,6 +104,9 @@ app.get('/api/players/:email', function (request, response) {
 
 app.get('/db/reponses', function (request, response) {
   pg.connect(process.env.DATABASE_URL, function(err, client, done) {
+    if(!client) {
+      return;
+    }
     client.query('SELECT * FROM reponse', function(err, result) {
       done();
       if (err)
@@ -107,6 +119,9 @@ app.get('/db/reponses', function (request, response) {
 
 app.get('/db/players', function (request, response) {
   pg.connect(process.env.DATABASE_URL, function(err, client, done) {
+    if(!client) {
+      return;
+    }
     client.query('SELECT * FROM player', function(err, result) {
       done();
       if (err)
@@ -119,6 +134,9 @@ app.get('/db/players', function (request, response) {
 
 app.get('/db/questions', function (request, response) {
   pg.connect(process.env.DATABASE_URL, function(err, client, done) {
+    if(!client) {
+      return;
+    }
     client.query('SELECT * FROM question', function(err, result) {
       done();
       if (err)
