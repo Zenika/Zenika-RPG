@@ -88,10 +88,10 @@ app.get('/api/questions/:type', function (request, response) {
 });
 
 app.get('/api/players/:email', function (request, response) {
-  if(!client) {
-    return;
-  }
   pg.connect(process.env.DATABASE_URL, function(err, client, done) {
+    if(!client) {
+      return;
+    }
     client.query('SELECT * FROM player where email=($1)', [request.params.email], function(err, result) {
       done();
       if (err)
