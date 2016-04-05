@@ -7,6 +7,7 @@ var app = express();
 // set the port of our application
 // process.env.PORT lets the port be set by Heroku
 var port = process.env.PORT || 5000;
+var databaseUrl = process.env.DATABASE_UR || 'postgres://postgres:postgres@localhost:5432/zenika-rpg';
 
 app.use(bodyParser.json());
 app.use(express.static('.'));
@@ -21,7 +22,7 @@ app.use('/', express.static('.'));
 app.post('/api/game', function(request, response){
   var data = request.body;
 
-  pg.connect(process.env.DATABASE_URL, function(err, client, done) {
+  pg.connect(databaseUrl, function(err, client, done) {
     if(!client) {
       return;
     }
@@ -73,7 +74,7 @@ app.post('/api/game', function(request, response){
 });
 
 app.get('/api/questions/:type', function (request, response) {
-  pg.connect(process.env.DATABASE_URL, function(err, client, done) {
+  pg.connect(databaseUrl, function(err, client, done) {
     if(!client) {
       return;
     }
@@ -88,7 +89,7 @@ app.get('/api/questions/:type', function (request, response) {
 });
 
 app.get('/api/players/:email', function (request, response) {
-  pg.connect(process.env.DATABASE_URL, function(err, client, done) {
+  pg.connect(databaseUrl, function(err, client, done) {
     if(!client) {
       return;
     }
@@ -103,7 +104,7 @@ app.get('/api/players/:email', function (request, response) {
 });
 
 app.get('/db/reponses', function (request, response) {
-  pg.connect(process.env.DATABASE_URL, function(err, client, done) {
+  pg.connect(databaseUrl, function(err, client, done) {
     if(!client) {
       return;
     }
@@ -118,7 +119,7 @@ app.get('/db/reponses', function (request, response) {
 });
 
 app.get('/db/players', function (request, response) {
-  pg.connect(process.env.DATABASE_URL, function(err, client, done) {
+  pg.connect(databaseUrl, function(err, client, done) {
     if(!client) {
       return;
     }
@@ -133,7 +134,7 @@ app.get('/db/players', function (request, response) {
 });
 
 app.get('/db/questions', function (request, response) {
-  pg.connect(process.env.DATABASE_URL, function(err, client, done) {
+  pg.connect(databaseUrl, function(err, client, done) {
     if(!client) {
       return;
     }
