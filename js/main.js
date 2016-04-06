@@ -3,6 +3,7 @@ var ZenikaRPG = ZenikaRPG || {};
 var IDE_HOOK = false;
 var VERSION = '2.4.4';
 var DEBUG = false;
+var COLLISION_DEBUG = false;
 
 var gameWidth = window.innerWidth;
 var gameHeight = window.innerHeight;
@@ -20,6 +21,12 @@ function startGame() {
 }
 
 $.getJSON('/config', function (data) {
-    DEBUG = !!data.debug;
+    if(!!data.debug){
+        DEBUG = true;
+        COLLISION_DEBUG = true;
+    }else if(!!data.noDataBase){
+        DEBUG = true;
+        COLLISION_DEBUG = false;
+    }
     startGame();
 });

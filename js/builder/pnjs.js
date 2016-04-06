@@ -4,7 +4,7 @@ ZenikaRPG.BuilderPnjs = function () {
 };
 
 ZenikaRPG.BuilderPnjs.prototype = {
-    create: function (game, boxCollisionGroup, collisionGroups, ship, debug) {
+    create: function (game, boxCollisionGroup, collisionGroups, ship) {
         var questions = {};
 
         var categories = ['Web', 'DevOps', 'BigData', 'Agile', 'Craftsmanship', 'IOT', 'Java'];
@@ -12,7 +12,7 @@ ZenikaRPG.BuilderPnjs.prototype = {
         categories.forEach(function (category) {
             questions[category] = [];
 
-            if (!debug) {
+            if (!DEBUG) {
                 $.getJSON("/api/questions/" + category, function (data) {
                         data.results.forEach(function (result) {
                             var question = {
@@ -85,12 +85,12 @@ ZenikaRPG.BuilderPnjs.prototype = {
         ];
 
         boxes.forEach(function (box) {
-            this.createBox(game, boxCollisionGroup, collisionGroups, ship, box.x, box.y, box, debug);
+            this.createBox(game, boxCollisionGroup, collisionGroups, ship, box.x, box.y, box);
         }, this);
     },
-    createBox: function (game, boxCollisionGroup, collisionGroups, ship, x, y, box, debug) {
+    createBox: function (game, boxCollisionGroup, collisionGroups, ship, x, y, box) {
         var interactionArea = game.add.sprite(x, y, 'pnj-sample');
-        game.physics.p2.enable([interactionArea], debug);
+        game.physics.p2.enable([interactionArea], COLLISION_DEBUG);
         interactionArea.body.static = true;
         interactionArea.body.setCircle(100);
 
@@ -99,7 +99,7 @@ ZenikaRPG.BuilderPnjs.prototype = {
         interactionArea.body.box = box;
 
         var pnj = game.add.sprite(x, y, 'pnj-sample');
-        game.physics.p2.enable([pnj], debug);
+        game.physics.p2.enable([pnj], COLLISION_DEBUG);
         pnj.body.static = true;
         pnj.body.setCollisionGroup(boxCollisionGroup);
         pnj.body.collides(collisionGroups);

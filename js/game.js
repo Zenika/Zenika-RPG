@@ -29,10 +29,10 @@ ZenikaRPG.Game.prototype = {
         this.map = map;
         map.fixedToCamera = true;
 
-        this.ship = new ZenikaRPG.BuilderPlayer().create(this.game, this.playerCollisionGroup, [this.boxCollisionGroup, this.ballCollisionGroup, this.wallCollisionGroup], this.DEBUG);
-        new ZenikaRPG.BuilderWalls().create(this.game, this.wallCollisionGroup, [this.boxCollisionGroup, this.ballCollisionGroup, this.playerCollisionGroup, this.wallCollisionGroup], this.DEBUG);
-        new ZenikaRPG.BuilderBalls().create(this.game, this.ballCollisionGroup, [this.boxCollisionGroup, this.ballCollisionGroup, this.playerCollisionGroup, this.wallCollisionGroup], this.DEBUG);
-        new ZenikaRPG.BuilderPnjs().create(this.game, this.boxCollisionGroup, [this.boxCollisionGroup, this.ballCollisionGroup, this.playerCollisionGroup], this.ship, this.DEBUG)
+        this.ship = new ZenikaRPG.BuilderPlayer().create(this.game, this.playerCollisionGroup, [this.boxCollisionGroup, this.ballCollisionGroup, this.wallCollisionGroup], COLLISION_DEBUG);
+        new ZenikaRPG.BuilderWalls().create(this.game, this.wallCollisionGroup, [this.boxCollisionGroup, this.ballCollisionGroup, this.playerCollisionGroup, this.wallCollisionGroup], COLLISION_DEBUG);
+        new ZenikaRPG.BuilderBalls().create(this.game, this.ballCollisionGroup, [this.boxCollisionGroup, this.ballCollisionGroup, this.playerCollisionGroup, this.wallCollisionGroup], COLLISION_DEBUG);
+        new ZenikaRPG.BuilderPnjs().create(this.game, this.boxCollisionGroup, [this.boxCollisionGroup, this.ballCollisionGroup, this.playerCollisionGroup], this.ship, COLLISION_DEBUG)
 
         var self = this;
 

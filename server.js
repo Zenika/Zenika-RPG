@@ -12,9 +12,14 @@ var databaseUrl = process.env.DATABASE_UR || 'postgres://postgres:postgres@local
 app.use(bodyParser.json());
 app.use(express.static('.'));
 
+function containArg(arg){
+    return process.env.npm_config_argv.indexOf(arg) != -1
+}
+
 app.get('/config', function (request, response) {
     response.send({
-        debug: process.env.npm_config_debug
+        debug: containArg('--debug'),
+        noDataBase: containArg('--no-database')
     });
 });
 

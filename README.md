@@ -16,4 +16,9 @@ Debug mode no database and collision area displayed
 npm start --debug
 ```
 <br />
+Debug mode only with no database and collision area keep hide
+```
+npm start --no-database
+```
+<br />
 open browser localhost:5000
