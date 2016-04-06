@@ -17,7 +17,7 @@ ZenikaRPG.BuilderWalls.prototype = {
 
         this.buildBody(element, wallCollisionGroup, collisionGroups, debug);
     },
-    buildFountain: function(game, position, wallCollisionGroup, collisionGroups, debug){
+    buildFountain: function(game, wallCollisionGroup, collisionGroups, debug){
         var element = game.add.sprite(600, 1160, 'wall');
         game.physics.p2.enable(element, debug);
         element.body.setCircle(200);
