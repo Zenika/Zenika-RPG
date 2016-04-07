@@ -171,4 +171,5 @@ app.get('/db/questions', function (request, response) {
 
 app.listen(port, function () {
     console.log('App listening on port ' + port + '!');
+    console.log('App databaseUrl ' + databaseUrl + '!');
 });
