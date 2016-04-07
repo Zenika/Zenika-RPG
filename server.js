@@ -7,7 +7,7 @@ var app = express();
 // set the port of our application
 // process.env.PORT lets the port be set by Heroku
 var port = process.env.PORT || 5000;
-var databaseUrl = process.env.DATABASE_UR || 'postgres://postgres:postgres@localhost:5432/zenika-rpg';
+var databaseUrl = process.env.DATABASE_URL || 'postgres://postgres:postgres@localhost:5432/zenika-rpg';
 
 app.use(bodyParser.json());
 app.use(express.static('.'));
