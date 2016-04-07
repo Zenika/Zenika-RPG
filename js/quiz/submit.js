@@ -24,6 +24,7 @@ ZenikaRPG.QuizSubmit.prototype = {
 
         $('#timer').hide();
         $('#menu').hide();
+        $('#submitGameWrapper').hide();
         $('#inputFirstname').val('');
         $('#inputLastname').val('');
         $('#inputEmail').val('');

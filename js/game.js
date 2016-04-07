@@ -37,6 +37,7 @@ ZenikaRPG.Game.prototype = {
         var self = this;
 
         var quiz = new ZenikaRPG.Quiz();
+        this.quiz = quiz;
 
         quiz.build(function(){
             self.ship.isAllowedToMove = false;
@@ -106,24 +107,7 @@ ZenikaRPG.Game.prototype = {
     },
 
     update: function () {
-        if (this.start) {
-            this.remainingTime = this.totalTime - (Date.now() - this.startTime);
-            $('#timer').html((this.remainingTime / 1000).toFixed(1));
-            if (this.remainingTime <= 10 * 1000) {
-                $('#timer').addClass('time-limit');
-            }
-            if (this.remainingTime <= 0) {
-                // console.log('Should submit');
-                if (!DEBUG) {
-                    this.start = false;
-                    this.submitGame(0);
-                }
-                else {
-                    this.totalTime = 1 * 60 * 1000;
-                    this.startTime = Date.now();
-                }
-            }
-        }
+        this.quiz.updateTimer();
 
         if (this.ship.isAllowedToMove) {
             //  only move when you click

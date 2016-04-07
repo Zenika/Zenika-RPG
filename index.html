@@ -23,256 +23,135 @@
     <script type="text/javascript" src="js/menu.js"></script>
     <script type="text/javascript" src="js/game.js"></script>
 
-    <style>
-        body {
-            margin: 0px;
-            padding: 0px;
-            font-family: Arial;
-            font-size: 14px;
-            background-color: #000000;
-            /*color: #fff;*/
-            color: gray;
-        }
-        .menu {
-          color: black;
-          position: absolute;
-          top: 8%;
-          right: 3%;
-          background-color: red;
-          /*height: 80%;*/
-          width: 3%;
-          padding: 5px;
-          text-align: center;
-          display: none;
-        }
-
-        .menu .offre {
-          width: 100%;
-          display: block;
-        }
-        .menu .done {
-          position: relative;
-          float: left
-        }
-        .menu .done:after {
-          width: 100%;
-          height: 100%;
-          background-image: url("assets/check.png");
-          background-position: 50% 50%;
-          background-size: contain;
-          display: block;
-          content: ' ';
-          position: absolute;
-          bottom: 0;
-          right: 0;
-        }
-
-        .box {
-          width: 34%;
-          height: 45%;
-          position: absolute;
-          top: 8%;
-          left: 3%;
-          display: none;
-        }
-        .box > .header {
-          border: 1px solid red;
-          color: white;
-          background-color: red;
-          padding: 15px;
-          width: 100%;
-        }
-        .box > .header > .quit {
-          position: absolute;
-          top: 15px;
-          right: 0;
-          font-size: 50px;
-          cursor: pointer;
-        }
-        .box > .content {
-          border: 1px solid red;
-          background-color: white;
-          padding: 15px;
-          width: 100%;
-          height: 100%;
-          display: none;
-          text-align: center;
-        }
-        .box > .content .reponse {
-          margin: 2%;
-        }
-
-        .button {
-          padding: 4%;
-          width: 37%;
-          height: 50px;
-          border: 1px solid red;
-          background-color: white;
-          cursor: pointer;
-          display: inline-table;
-          text-align: center;
-          vertical-align: middle;
-        }
-
-        .button-inverse {
-          border: 1px solid red;
-          background-color: red;
-          color: white;
-        }
-
-        .button-small {
-          width: 17%;
-          height: 30px;
-          padding: 15px;
-        }
-
-        .button .text {
-          height: 50px;
-          display: table-cell;;
-          text-align: center;
-          vertical-align: middle;
-        }
-
-        .button-small .text {
-          height: 30px;
-          display: table-cell;;
-          text-align: center;
-          vertical-align: middle;
-        }
-
-        .start {
-          font-size: 20px;
-          text-align: center;
-          width: 70%;
-          position: absolute;
-          top: 24%;
-          left: 15%;
-          display: none;
-        }
-        .start > .header {
-          border: 1px solid red;
-          color: white;
-          background-color: red;
-          padding: 15px;
-          width: 100%;
-        }
-        .start > .content {
-          border: 1px solid red;
-          color: gray;
-          background-color: white;
-          padding: 15px;
-          width: 100%;
-        }
-
-        .form-info {
-          display: none;
-          color: red;
-        }
-
-        .time-limit {
-          color: red;
-          font-size: 36px;
-          /*font-weight: bold;*/
-        }
-
-        .time {
-          position: absolute;
-          top: 8%;
-          right: 0%;
-          font-size: 28px;
-          color: white;
-          text-shadow: 1px 1px 1px #000000;
-          /*height: 80%;*/
-          width: 100%;
-          padding: 5px;
-          text-align: center;
-        }
-    </style>
+    <link href="assets/main.css" media="all" rel="stylesheet">
 </head>
 <body>
 
-  <div class="time">
+<div class="time">
     <p id="timer"></p>
-  </div>
 
-  <div id="menu" class="menu">
+    <div class="border border-top"></div>
+    <div class="border border-bottom"></div>
+    <div class="border border-right"></div>
+    <div class="border border-left"></div>
+</div>
+
+<div id="menu" class="menu">
     <h4>Score</h4>
     <p id="score"></p>
     <!-- <p><a id="newGameButton" class="button button-small"><span class="text">Nouvelle partie</span></a></p> -->
-    <div id="offreJava"><img class="offre" src="assets/offres/Java.png"/></div>
-    <div id="offreCraftsmanship"><img class="offre" src="assets/offres/Craftsman.png"/></div>
-    <div id="offreBigData"><img class="offre" src="assets/offres/BigData.png"/></div>
-    <div id="offreDevOps"><img class="offre" src="assets/offres/DevOps.png"/></div>
-    <div id="offreWeb"><img class="offre" src="assets/offres/Web.png"/></div>
-    <div id="offreIOT"><img class="offre" src="assets/offres/IOT.png"/></div>
-    <div id="offreAgile"><img class="offre" src="assets/offres/Agile.png"/></div>
-    <a id="submitGame" class="button button-small">Terminer</a>
-  </div>
+    <div class="offre-wrapper" id="offreJava"><img class="offre" src="assets/offres/Java.png"/></div>
+    <div class="offre-wrapper" id="offreCraftsmanship"><img class="offre" src="assets/offres/Craftsman.png"/></div>
+    <div class="offre-wrapper" id="offreBigData"><img class="offre" src="assets/offres/BigData.png"/></div>
+    <div class="offre-wrapper" id="offreDevOps"><img class="offre" src="assets/offres/DevOps.png"/></div>
+    <div class="offre-wrapper" id="offreWeb"><img class="offre" src="assets/offres/Web.png"/></div>
+    <div class="offre-wrapper" id="offreIOT"><img class="offre" src="assets/offres/IOT.png"/></div>
+    <div class="offre-wrapper" id="offreAgile"><img class="offre" src="assets/offres/Agile.png"/></div>
 
-  <div id="newGame" class="start">
+    <div class="border border-top"></div>
+    <div class="border border-bottom"></div>
+    <div class="border border-right"></div>
+    <div class="border border-left"></div>
+</div>
+
+<div id="submitGameWrapper">
+    <a id="submitGame" class="button button-small">Terminer</a>
+    <div class="border border-top"></div>
+    <div class="border border-bottom"></div>
+    <div class="border border-right"></div>
+    <div class="border border-left"></div>
+</div>
+
+<div id="newGame" class="start">
     <div class="header">
-      <h3>Bienvenu dans ce questionnaire Zenika</h3>
+        <h3>Bienvenu chez Zenika</h3>
     </div>
     <div class="content">
-      <form>
-        <p>
-          <label for="inputFirstname">Prénom</label>
-          <input name="inputFirstname" id="inputFirstname" type="text" placeholder="Prénom"/>
-            <label for="inputLastname">Nom</label>
-          <input name="inputLastname" id="inputLastname" type="text" placeholder="Nom"/>
-            <label for="inputEmail">Email</label>
-          <input name="inputEmail" id="inputEmail" type="email" placeholder="Email"/>
-        </p>
-        <p id="formValidation" class="form-info">
-          Informations saisies non valides
-        </p>
-        <p><a id="startGameButton" class="button button-inverse button-small"><span class="text">Commencer</span></a></p>
-      </form>
-      <p>Répondez aux questions de nos pôles pour tenter de gagner des lots</p>
-      <p>Parcourez le monde, récupérez les 'Bidules' et découvrez nos agences</p>
+        <form>
+            <p>
+                <!--<label for="inputFirstname">Prénom</label>-->
+                <input name="inputFirstname" id="inputFirstname" type="text" placeholder="Prénom"/>
+                <!--<label for="inputLastname">Nom</label>-->
+                <input name="inputLastname" id="inputLastname" type="text" placeholder="Nom"/>
+                <!--<label for="inputEmail">Email</label>-->
+                <input name="inputEmail" id="inputEmail" type="email" placeholder="Email"/>
+            </p>
+            <p id="formValidation" class="form-info">
+                Informations saisies non valides
+            </p>
+            <p><a id="startGameButton" class="button button-inverse button-small"><span
+                    class="text">Commencer</span></a></p>
+        </form>
+        <p>Répondez aux questions de nos pôles pour tenter de gagner des lots !</p>
     </div>
-  </div>
+    <div class="border border-top"></div>
+    <div class="border border-bottom"></div>
+    <div class="border border-right"></div>
+    <div class="border border-left"></div>
+</div>
 
-  <div id="box" class="box">
+<div id="box" class="box">
     <div class="header">
-      <h3>Question <span id="title"></span></h3>
-      <a id="quit" class="quit">&times;</a>
+        <h3>Question <span id="title"></span></h3>
+        <a id="quit" class="quit">&times;</a>
     </div>
     <div id="quizz" class="content">
-      <a id="takeQuizz" class="button"><span class="text">Faire le quizz</span></a>
+        <a id="takeQuizz" class="button"><span class="text">Faire le quizz</span></a>
     </div>
     <div id="question" class="content">
-      <h3 id="questionLibelle"></h3>
-      <div>
-        <a class="reponse button"><span id="reponse1" class="text"></span></a>
-        <a class="reponse button"><span id="reponse2" class="text"></span></a>
-        <a class="reponse button"><span id="reponse3" class="text"></span></a>
-        <a class="reponse button"><span id="reponse4" class="text"></span></a>
-      </div>
+        <h3 id="questionLibelle"></h3>
+        <div>
+            <table>
+                <tr>
+                    <td>
+                        <a class="reponse button"><span id="reponse1" class="text"></span></a>
+                    </td>
+                    <td>
+                        <a class="reponse button"><span id="reponse2" class="text"></span></a>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <a class="reponse button"><span id="reponse3" class="text"></span></a>
+                    </td>
+                    <td>
+                        <a class="reponse button"><span id="reponse4" class="text"></span></a>
+                    </td>
+                </tr>
+            </table>
+        </div>
     </div>
     <div id="done" class="content">
-      <h3>Well done !</h3>
-      <div>
-        <a id="continue" class="button"><span class="text">Continue</span></a>
-      </div>
+        <h3>Well done !</h3>
+        <div>
+            <a id="continue" class="button"><span class="text">Continue</span></a>
+        </div>
     </div>
-  </div>
+    <div class="border border-top"></div>
+    <div class="border border-bottom"></div>
+    <div class="border border-right"></div>
+    <div class="border border-left"></div>
+</div>
 
-  <div id="confirmation" class="start">
+<div id="confirmation" class="start">
     <div class="header">
-      <h3>Questionnaire validé</h3>
+        <h3>Questionnaire validé</h3>
     </div>
     <div class="content">
         <p id="noTime">Le temps est écoulé</p>
         <p>
-          Vos réponses ont bien été pris en compte.
-          Merci de votre participation.
+            Vos réponses ont bien été pris en compte.
+            Merci de votre participation.
         </p>
         <p><a id="endGameButton" class="button button-inverse button-small"><span class="text">Terminer</span></a></p>
     </div>
-  </div>
+    <div class="border border-top"></div>
+    <div class="border border-bottom"></div>
+    <div class="border border-right"></div>
+    <div class="border border-left"></div>
+</div>
 
-  <!-- include the main game file -->
-  <script src="js/main.js"></script>
+<!-- include the main game file -->
+<script src="js/main.js"></script>
 </body>
 </html>

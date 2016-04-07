@@ -16,6 +16,9 @@ ZenikaRPG.Quiz.prototype = {
         self.remainingTime = self.totalTime;
         self.start = false;
 
+        self.startGameCallback = startGameCallback;
+        self.stopPlayerCallback = stopPlayerCallback;
+
         stopPlayerCallback();
 
         $('#timer').hide();
@@ -44,10 +47,11 @@ ZenikaRPG.Quiz.prototype = {
                     $.getJSON("/api/players/" + email, function (data) {
                             if (data.results.length === 0) {
                                 $('#timer').show();
-                                $('#timer').html((this.remainingTime / 1000).toFixed(1));
+                                $('#timer').html((self.remainingTime / 1000).toFixed(0));
                                 $('#newGame').hide();
                                 $('#newGameButton').hide();
                                 $('#menu').show();
+                                $('#submitGameWrapper').show();
                                 self.player = {
                                     firstname: firstname,
                                     lastname: lastname,
@@ -75,10 +79,11 @@ ZenikaRPG.Quiz.prototype = {
                 }
             });
         } else {
-            $('#timer').html((this.remainingTime / 1000).toFixed(1));
+            $('#timer').html((self.remainingTime / 1000).toFixed(0));
             $('#newGame').hide();
             $('#newGameButton').hide();
             $('#menu').show();
+            $('#submitGameWrapper').show();
 
             updateCursorCallback();
             resumePlayerCallback();
@@ -89,15 +94,19 @@ ZenikaRPG.Quiz.prototype = {
 
         $('#submitGame').click(function () {
             self.start = false;
-            new ZenikaRPG.QuizSubmit().submit(self.player, self.playerScore, self.remainingTime, self.questions,
-                function (score) {
-                    startGameCallback(score);
-                },
-                function () {
-                    self.setPlayerScore(0);
-                    stopPlayerCallback();
-                })
+            self.submitGame();
         });
+    },
+    submitGame: function(){
+        var self = this;
+        new ZenikaRPG.QuizSubmit().submit(self.player, self.playerScore, self.remainingTime, self.questions,
+            function (score) {
+                self.startGameCallback(score);
+            },
+            function () {
+                self.setPlayerScore(0);
+                self.stopPlayerCallback();
+            })
     },
     showQuestions: function (box, stopPlayerCallback, resumePlayerCallback, playerCounterCallback) {
         var self = this;
@@ -171,8 +180,8 @@ ZenikaRPG.Quiz.prototype = {
                         });
                         if (question.reponse === question.bonneReponse) {
                             self.setPlayerScore(self.playerScore + 50);
-                            self.totalTime += Math.round((10 * 1000) * (1 + 1 / duration));
                         }
+                        self.totalTime += Math.round((10 * 1000) * (1 + 1 / duration));
                         displayQuestion(box, questions, state)
                     });
                     i++;
@@ -237,5 +246,25 @@ ZenikaRPG.Quiz.prototype = {
     setPlayerScore: function (score) {
         this.playerScore = score;
         $('#score').html(this.playerScore);
+    },
+    updateTimer: function(){
+        var self = this;
+        if (self.start) {
+            self.remainingTime = self.totalTime - (Date.now() - self.startTime);
+            $('#timer').html((self.remainingTime / 1000).toFixed(0));
+            if (self.remainingTime <= 10 * 1000) {
+                $('#timer').addClass('time-limit');
+            }
+            if (self.remainingTime <= 0) {
+                if (!DEBUG) {
+                    self.start = false;
+                    self.submitGame();
+                }
+                else {
+                    self.totalTime = 1 * 60 * 1000;
+                    self.startTime = Date.now();
+                }
+            }
+        }
     }
 };

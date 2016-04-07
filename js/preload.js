@@ -12,6 +12,13 @@ ZenikaRPG.Preload.prototype = {
     this.load.image('block', 'assets/block.png');
 
     this.load.image('pnj-sample', 'assets/pnj-sample.png');
+    this.load.image('pnj1', 'assets/pnj1.png');
+    this.load.image('pnj2', 'assets/pnj2.png');
+    this.load.image('pnj3', 'assets/pnj3.png');
+    this.load.image('pnj4', 'assets/pnj4.png');
+    this.load.image('pnj5', 'assets/pnj5.png');
+    this.load.image('pnj6', 'assets/pnj6.png');
+    this.load.image('pnj7', 'assets/pnj-sample.png');
 
     this.load.spritesheet('button', 'assets/button_sprite_sheet.png', 193, 71);
   },

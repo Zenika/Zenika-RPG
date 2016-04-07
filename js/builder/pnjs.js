@@ -9,26 +9,36 @@ ZenikaRPG.BuilderPnjs.prototype = {
 
         var categories = ['Web', 'DevOps', 'BigData', 'Agile', 'Craftsmanship', 'IOT', 'Java'];
 
+        function buildQuestion(result, questionsCategory) {
+            var question = {
+                libelle: result.libelle,
+                reponsePossibles: [],
+                bonneReponse: result.bonne_reponse
+            };
+            question.reponsePossibles.push(result.reponse_1);
+            question.reponsePossibles.push(result.reponse_2);
+            question.reponsePossibles.push(result.reponse_3);
+            question.reponsePossibles.push(result.reponse_4);
+
+            questionsCategory.push(question);
+        }
+
         categories.forEach(function (category) {
             questions[category] = [];
 
             if (!DEBUG) {
                 $.getJSON("/api/questions/" + category, function (data) {
                         data.results.forEach(function (result) {
-                            var question = {
-                                libelle: result.libelle,
-                                reponsePossibles: [],
-                                bonneReponse: result.bonne_reponse
-                            };
-                            question.reponsePossibles.push(result.reponse_1);
-                            question.reponsePossibles.push(result.reponse_2);
-                            question.reponsePossibles.push(result.reponse_3);
-                            question.reponsePossibles.push(result.reponse_4);
-
-                            questions[category].push(question);
+                            buildQuestion(result, questions[category]);
                         });
                     }
                 );
+
+            } else {
+                var mockedResult = '{"results":[{"id":1,"type":"Web","index":1,"libelle":"Quelle est le principal défaut de AngularJS (V1) ?","reponse_1":"La productivité est faible","reponse_2":"La communauté n\'est pas active","reponse_3":"Le framework est trop complexe","reponse_4":"La création de composant n\'est pas simple","bonne_reponse":4}]}';
+                JSON.parse(mockedResult).results.forEach(function (result) {
+                    buildQuestion(result, questions[category]);
+                });
             }
         });
 
@@ -84,12 +94,14 @@ ZenikaRPG.BuilderPnjs.prototype = {
             }
         ];
 
+        var i = 1;
         boxes.forEach(function (box) {
-            this.createBox(game, boxCollisionGroup, collisionGroups, ship, box.x, box.y, box);
+            this.createBox(game, boxCollisionGroup, collisionGroups, ship, box.x, box.y, box, i);
+            i++;
         }, this);
     },
-    createBox: function (game, boxCollisionGroup, collisionGroups, ship, x, y, box) {
-        var interactionArea = game.add.sprite(x, y, 'pnj-sample');
+    createBox: function (game, boxCollisionGroup, collisionGroups, ship, x, y, box, i) {
+        var interactionArea = game.add.sprite(x, y, 'pnj'+i);
         game.physics.p2.enable([interactionArea], COLLISION_DEBUG);
         interactionArea.body.static = true;
         interactionArea.body.setCircle(100);
@@ -98,7 +110,7 @@ ZenikaRPG.BuilderPnjs.prototype = {
         interactionArea.body.name = box.name;
         interactionArea.body.box = box;
 
-        var pnj = game.add.sprite(x, y, 'pnj-sample');
+        var pnj = game.add.sprite(x, y, 'pnj'+i);
         game.physics.p2.enable([pnj], COLLISION_DEBUG);
         pnj.body.static = true;
         pnj.body.setCollisionGroup(boxCollisionGroup);
