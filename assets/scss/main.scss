@@ -108,7 +108,7 @@ body {
     text-align: center;
     padding-top: 60px;
 
-    #takeQuizz, #continue {
+    #takeQuizz, #continue, #continue-reponses {
       margin-bottom: 25px;
     }
   }
@@ -126,6 +126,7 @@ body {
       padding-left: 10px;
       padding-right: 10px;
       padding-bottom: 20px;
+      text-align: left;
     }
     .reponse.button {
       width: 100%;

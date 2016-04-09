@@ -34,6 +34,8 @@ ZenikaRPG.Game.prototype = {
         new ZenikaRPG.BuilderBalls().create(this.game, this.ballCollisionGroup, [this.boxCollisionGroup, this.ballCollisionGroup, this.playerCollisionGroup, this.wallCollisionGroup], COLLISION_DEBUG);
         new ZenikaRPG.BuilderPnjs().create(this.game, this.boxCollisionGroup, [this.boxCollisionGroup, this.ballCollisionGroup, this.playerCollisionGroup], this.ship, COLLISION_DEBUG)
 
+        this.ship.isAllowedToMove = false
+
         var self = this;
 
         var quiz = new ZenikaRPG.Quiz();

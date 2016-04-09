@@ -22,6 +22,7 @@ ZenikaRPG.Quiz.prototype = {
         stopPlayerCallback();
 
         $('#timer').hide();
+        $('#question').hide();
 
         if (!debug) {
             $('#newGame').show();
@@ -110,7 +111,7 @@ ZenikaRPG.Quiz.prototype = {
     },
     showQuestions: function (box, stopPlayerCallback, resumePlayerCallback, playerCounterCallback) {
         var self = this;
-        if (!self.doingQuizz && !self.isTextDisplayed) {
+        if (!self.doingQuizz && !self.isTextDisplayed && !box.completed) {
             $('#box').show();
             $('#quizz').show();
             $('#title').text(box.name);
@@ -137,14 +138,15 @@ ZenikaRPG.Quiz.prototype = {
                 }
             }
 
-            function showContinue() {
+            function showContinue(box, questions, state) {
+                box.completed = true;
                 $('#question').hide();
                 $('#done').show();
             }
 
             function displayQuestion(box, questions, state) {
                 if (state >= questions.length) {
-                    showContinue();
+                    showContinue(box, questions, state);
                     return;
                 }
 
@@ -158,34 +160,47 @@ ZenikaRPG.Quiz.prototype = {
                     $(reponseId).unbind('click');
                 }
 
-                var i = 1;
-                question.reponsePossibles.forEach(function (reponse) {
-                    var index = i;
-                    var reponseId = '#reponse' + i;
-                    $(reponseId).html(reponse);
+                if(question.bonneReponse == 0){
+                    $('#question #reponses').hide();
+                    $('#question #continuer').show();
 
-                    $(reponseId).bind('click', function () {
-                        var endTime = Date.now();
-                        question.reponse = index;
-                        var duration = endTime - startTime;
-                        question.duration = duration;
-                        state = state + 1;
-                        self.questions.push({
-                            type: box.name,
-                            index: state,
-                            libelle: question.libelle,
-                            reponse: index,
-                            bonneReponse: question.bonneReponse,
-                            tempsReponse: duration
-                        });
-                        if (question.reponse === question.bonneReponse) {
-                            self.setPlayerScore(self.playerScore + 50);
-                        }
-                        self.totalTime += Math.round((10 * 1000) * (1 + 1 / duration));
-                        displayQuestion(box, questions, state)
+                    $('#question #continue-reponses').unbind("click");
+                    $('#question #continue-reponses').bind('click', function () {
+                        self.totalTime += Math.round((10 * 1000));
+                        displayQuestion(box, questions, state + 1)
                     });
-                    i++;
-                });
+                }else{
+                    $('#question #reponses').show();
+                    $('#question #continuer').hide();
+                    var i = 1;
+                    question.reponsePossibles.forEach(function (reponse) {
+                        var index = i;
+                        var reponseId = '#reponse' + i;
+                        $(reponseId).html(reponse);
+
+                        $(reponseId).bind('click', function () {
+                            var endTime = Date.now();
+                            question.reponse = index;
+                            var duration = endTime - startTime;
+                            question.duration = duration;
+                            state = state + 1;
+                            self.questions.push({
+                                type: box.name,
+                                index: state,
+                                libelle: question.libelle,
+                                reponse: index,
+                                bonneReponse: question.bonneReponse,
+                                tempsReponse: duration
+                            });
+                            if (question.reponse === question.bonneReponse) {
+                                self.setPlayerScore(self.playerScore + 50);
+                            }
+                            self.totalTime += Math.round((10 * 1000) * (1 + 1 / duration));
+                            displayQuestion(box, questions, state)
+                        });
+                        i++;
+                    });
+                }
             }
 
             $('#quit').bind('click', function () {
@@ -213,7 +228,7 @@ ZenikaRPG.Quiz.prototype = {
                     displayQuestion(box, box.box.questions, box.box.state)
                 }
                 else {
-                    showContinue();
+                    showContinue(box, box.box.questions, box.box.state);
                 }
 
                 $('#continue').bind('click', validate);
