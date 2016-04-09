@@ -34,6 +34,7 @@ ZenikaRPG.QuizSubmit.prototype = {
         $("#submitGame").unbind("click");
 
         $("#confirmation").show();
+        $("#box").hide();
         if (remainingTime === 0) {
             $("#noTime").show();
         }
