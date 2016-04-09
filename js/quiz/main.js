@@ -4,7 +4,7 @@ ZenikaRPG.Quiz = function () {
 };
 
 ZenikaRPG.Quiz.prototype = {
-    build: function (stopPlayerCallback, resumePlayerCallback, updateCursorCallback, startGameCallback, debug) {
+    build: function (stopPlayerCallback, resumePlayerCallback, updateCursorCallback, startGameCallback, stopGameCallback, debug) {
         this.setPlayerScore(0);
 
         var self = this;
@@ -17,6 +17,7 @@ ZenikaRPG.Quiz.prototype = {
         self.start = false;
 
         self.startGameCallback = startGameCallback;
+        self.stopGameCallback = stopGameCallback;
         self.stopPlayerCallback = stopPlayerCallback;
 
         stopPlayerCallback();
@@ -100,6 +101,7 @@ ZenikaRPG.Quiz.prototype = {
     },
     submitGame: function(){
         var self = this;
+        self.stopGameCallback();
         new ZenikaRPG.QuizSubmit().submit(self.player, self.playerScore, self.remainingTime, self.questions,
             function (score) {
                 self.startGameCallback(score);

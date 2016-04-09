@@ -32,7 +32,9 @@ ZenikaRPG.Game.prototype = {
         this.ship = new ZenikaRPG.BuilderPlayer().create(this.game, this.playerCollisionGroup, [this.boxCollisionGroup, this.ballCollisionGroup, this.wallCollisionGroup], COLLISION_DEBUG);
         new ZenikaRPG.BuilderWalls().create(this.game, this.wallCollisionGroup, [this.boxCollisionGroup, this.ballCollisionGroup, this.playerCollisionGroup, this.wallCollisionGroup], COLLISION_DEBUG);
         new ZenikaRPG.BuilderBalls().create(this.game, this.ballCollisionGroup, [this.boxCollisionGroup, this.ballCollisionGroup, this.playerCollisionGroup, this.wallCollisionGroup], COLLISION_DEBUG);
-        new ZenikaRPG.BuilderPnjs().create(this.game, this.boxCollisionGroup, [this.boxCollisionGroup, this.ballCollisionGroup, this.playerCollisionGroup], this.ship, COLLISION_DEBUG)
+        new ZenikaRPG.BuilderPnjs().create(this.game, this.boxCollisionGroup, [this.boxCollisionGroup, this.ballCollisionGroup, this.playerCollisionGroup], this.ship, COLLISION_DEBUG);
+
+        this.drone = new ZenikaRPG.BuilderDrone().create(this.game);
 
         this.ship.isAllowedToMove = false
 
@@ -49,6 +51,8 @@ ZenikaRPG.Game.prototype = {
             self.cursors = self.game.input.keyboard.createCursorKeys();
         }, function(score){
             self.game.state.start('Game', true, false, score);
+        }, function(){
+            self.drone.show(self.ship);
         }, this.DEBUG);
 
         this.game.physics.p2.setPostBroadphaseCallback(function (body1, body2) {

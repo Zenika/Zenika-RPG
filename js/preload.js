@@ -20,6 +20,8 @@ ZenikaRPG.Preload.prototype = {
     this.load.image('pnj6', 'assets/pnj6.png');
     this.load.image('pnj7', 'assets/pnj-sample.png');
 
+    this.load.image('drone', 'assets/drone.png');
+
     this.load.spritesheet('button', 'assets/button_sprite_sheet.png', 193, 71);
   },
   create: function() {
