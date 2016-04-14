@@ -3,6 +3,8 @@ var ZenikaRPG = ZenikaRPG || {};
 ZenikaRPG.QuizSubmit = function () {
 };
 
+ZenikaRPG.restartTimeout = null;
+
 ZenikaRPG.QuizSubmit.prototype = {
     submit: function (player, playerScore, remainingTime, questions, startGameCallback, stopGameCallback) {
         var data = {
@@ -44,10 +46,19 @@ ZenikaRPG.QuizSubmit.prototype = {
 
         var self = this;
         $("#endGameButton").bind("click", function () {
+            if(ZenikaRPG.restartTimeout){
+                clearTimeout(ZenikaRPG.restartTimeout);
+            }
             $("#endGameButton").unbind("click");
             $("#confirmation").hide();
             startGameCallback(data.score);
         });
+
+        ZenikaRPG.restartTimeout = setTimeout(function(){
+            $("#endGameButton").unbind("click");
+            $("#confirmation").hide();
+            startGameCallback(data.score);
+        }, 10 * 1000);
 
         stopGameCallback();
     },
