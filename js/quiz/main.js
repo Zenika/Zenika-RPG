@@ -134,7 +134,7 @@ ZenikaRPG.Quiz.prototype = {
                 $("#takeQuizz").unbind("click");
                 box = null;
 
-                if (self.questions.length === 10) {
+                if (self.questions.length === 14) {
                     self.start = false;
                     self.submitGame(self.remainingTime);
                 }
