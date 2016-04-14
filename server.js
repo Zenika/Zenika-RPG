@@ -12,7 +12,7 @@ var databaseUrl = process.env.DATABASE_URL || 'postgres://postgres:postgres@loca
 app.use(bodyParser.json());
 app.use(express.static('.'));
 
-function containArg(arg){
+function containArg(arg) {
     return process.env.npm_config_argv.indexOf(arg) != -1
 }
 
@@ -157,6 +157,38 @@ app.get('/db/questions', function (request, response) {
             return;
         }
         client.query('SELECT * FROM question', function (err, result) {
+            done();
+            if (err) {
+                console.error(err);
+                response.send("Error " + err);
+            }
+            else {
+                response.send({"results": result.rows});
+            }
+        });
+    });
+});
+
+app.get('/db/winners', function (request, response) {
+    pg.connect(databaseUrl, function (err, client, done) {
+        if (!client) {
+            return;
+        }
+        client.query(`
+                        select p.firstname, p.lastname, p.email, score.score from 
+                        player as p, 
+                        (
+                            select r.f_player_id as p_id, sum((
+                            case 	when r.reponse=r.bonne_reponse then 1
+                                else 0
+                            end
+                            )*50*(exp(100./r.temps_reponse))) as score, sum(r.temps_reponse) as temps from reponse as r
+                            group by r.f_player_id 
+                        ) as score
+                        where score.p_id=p.id
+                        order by score.score desc
+                        limit 5;
+                        `, function (err, result) {
             done();
             if (err) {
                 console.error(err);
