@@ -44,9 +44,12 @@ app.post('/api/game', function (request, response) {
             function (err, result) {
                 if (err) {
                     console.log(err);
+                    done();
                 } else {
                     var playerId = result.rows[0].id;
                     console.log('row inserted with id: ' + result.rows[0].id);
+
+                    var questionsPosted = data.questions.length;
 
                     data.questions.forEach(function (question) {
                         client.query(
@@ -61,6 +64,10 @@ app.post('/api/game', function (request, response) {
                                 question.tempsReponse
                             ],
                             function (err, result) {
+                                questionsPosted--;
+                                if(questionsPosted == 0){
+                                    done();
+                                }
                                 if (err) {
                                     console.log(err);
                                 } else {
@@ -175,15 +182,15 @@ app.get('/db/winners', function (request, response) {
             return;
         }
         client.query(`
-                        select p.firstname, p.lastname, p.email, score.score from 
-                        player as p, 
+                        select p.firstname, p.lastname, p.email, score.score from
+                        player as p,
                         (
                             select r.f_player_id as p_id, sum((
                             case 	when r.reponse=r.bonne_reponse then 1
                                 else 0
                             end
                             )*50*(exp(100./r.temps_reponse))) as score, sum(r.temps_reponse) as temps from reponse as r
-                            group by r.f_player_id 
+                            group by r.f_player_id
                         ) as score
                         where score.p_id=p.id
                         order by score.score desc
