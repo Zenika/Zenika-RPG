@@ -16,6 +16,38 @@ function containArg(arg) {
     return process.env.npm_config_argv.indexOf(arg) != -1
 }
 
+function executeQueryWithCallback(query, params, response, callback) {
+    pg.connect(databaseUrl, function (err, client, done) {
+        try {
+            if (!client) {
+                return;
+            }
+            client.query(query, params, function (err, result) {
+                done();
+                if (err) {
+                    console.error(err);
+                    response.send("Error " + err);
+                }
+                else {
+                    callback(result);
+                }
+            });
+        } catch (error) {
+            try {
+                done();
+            } catch (error) {
+                // nothing to do just keep the program running
+            }
+        }
+    });
+}
+
+function executeQuery(query, params, response) {
+    executeQueryWithCallback(query, params, response, function (result) {
+        response.send({"results": result.rows});
+    });
+}
+
 app.get('/config', function (request, response) {
     response.send({
         debug: containArg('--debug'),
@@ -28,160 +60,79 @@ app.use('/', express.static('.'));
 app.post('/api/game', function (request, response) {
     var data = request.body;
 
-    pg.connect(databaseUrl, function (err, client, done) {
-        if (!client) {
-            return;
+    executeQueryWithCallback(
+        'INSERT into player (firstname, lastname, email, score, submit_date, duration) VALUES($1, $2, $3, $4, CURRENT_TIMESTAMP, $5) RETURNING id',
+        [
+            data.player.firstname,
+            data.player.lastname,
+            data.player.email,
+            data.score,
+            data.time
+        ],
+        response,
+        function (result) {
+            var playerId = result.rows[0].id;
+            data.questions.forEach(function (question) {
+                executeQueryWithCallback(
+                    'INSERT into reponse (f_player_id, type, index, question, reponse, bonne_reponse, temps_reponse) VALUES($1, $2, $3, $4, $5, $6, $7) RETURNING id',
+                    [
+                        playerId,
+                        question.type,
+                        question.index,
+                        question.libelle,
+                        question.reponse,
+                        question.bonneReponse,
+                        question.tempsReponse
+                    ],
+                    response,
+                    function (result) {
+                    }
+                );
+            });
         }
-        client.query(
-            'INSERT into player (firstname, lastname, email, score, submit_date, duration) VALUES($1, $2, $3, $4, CURRENT_TIMESTAMP, $5) RETURNING id',
-            [
-                data.player.firstname,
-                data.player.lastname,
-                data.player.email,
-                data.score,
-                data.time
-            ],
-            function (err, result) {
-                if (err) {
-                    console.log(err);
-                    done();
-                } else {
-                    var playerId = result.rows[0].id;
-                    console.log('row inserted with id: ' + result.rows[0].id);
+    );
 
-                    var questionsPosted = data.questions.length;
-
-                    data.questions.forEach(function (question) {
-                        client.query(
-                            'INSERT into reponse (f_player_id, type, index, question, reponse, bonne_reponse, temps_reponse) VALUES($1, $2, $3, $4, $5, $6, $7) RETURNING id',
-                            [
-                                playerId,
-                                question.type,
-                                question.index,
-                                question.libelle,
-                                question.reponse,
-                                question.bonneReponse,
-                                question.tempsReponse
-                            ],
-                            function (err, result) {
-                                questionsPosted--;
-                                if(questionsPosted == 0){
-                                    done();
-                                }
-                                if (err) {
-                                    console.log(err);
-                                } else {
-                                    console.log('row inserted with id: ' + result.rows[0].id);
-                                }
-                            }
-                        );
-                    });
-
-                }
-            }
-        );
-    });
-
-    console.log(request.body);      // your JSON
-    response.status(201).send(request.body);    // echo the result back
+    response.status(201).send(request.body);
 });
 
 app.get('/api/questions/:type', function (request, response) {
-    pg.connect(databaseUrl, function (err, client, done) {
-        if (!client) {
-            return;
-        }
-        client.query('SELECT * FROM question where type=($1)', [request.params.type], function (err, result) {
-            done();
-            if (err) {
-                console.error(err);
-                response.send("Error " + err);
-            }
-            else {
-                response.send({"results": result.rows});
-            }
-        });
-    });
+    executeQuery(
+        'SELECT * FROM question where type=($1)',
+        [request.params.type],
+        response);
 });
 
 app.get('/api/players/:email', function (request, response) {
-    pg.connect(databaseUrl, function (err, client, done) {
-        if (!client) {
-            return;
-        }
-        client.query('SELECT * FROM player where email=($1)', [request.params.email], function (err, result) {
-            done();
-            if (err) {
-                console.error(err);
-                response.send("Error " + err);
-            }
-            else {
-                response.send({"results": result.rows});
-            }
-        });
-    });
+    executeQuery(
+        'SELECT * FROM player where email=($1)',
+        [request.params.email],
+        response);
 });
 
 app.get('/db/reponses', function (request, response) {
-    pg.connect(databaseUrl, function (err, client, done) {
-        if (!client) {
-            return;
-        }
-        client.query('SELECT * FROM reponse', function (err, result) {
-            done();
-            if (err) {
-                console.error(err);
-                response.send("Error " + err);
-            }
-            else {
-                response.send({"results": result.rows});
-            }
-        });
-    });
+    executeQuery(
+        'SELECT * FROM reponse',
+        [],
+        response);
 });
 
 app.get('/db/players', function (request, response) {
-    pg.connect(databaseUrl, function (err, client, done) {
-        if (!client) {
-            return;
-        }
-        client.query('SELECT * FROM player', function (err, result) {
-            done();
-            if (err) {
-                console.error(err);
-                response.send("Error " + err);
-            }
-            else {
-                response.send({"results": result.rows});
-            }
-        });
-    });
+    executeQuery(
+        'SELECT * FROM player',
+        [],
+        response);
 });
 
 app.get('/db/questions', function (request, response) {
-    pg.connect(databaseUrl, function (err, client, done) {
-        if (!client) {
-            return;
-        }
-        client.query('SELECT * FROM question', function (err, result) {
-            done();
-            if (err) {
-                console.error(err);
-                response.send("Error " + err);
-            }
-            else {
-                response.send({"results": result.rows});
-            }
-        });
-    });
+    executeQuery(
+        'SELECT * FROM question',
+        [],
+        response);
 });
 
 app.get('/db/winners', function (request, response) {
-    pg.connect(databaseUrl, function (err, client, done) {
-        if (!client) {
-            return;
-        }
-        client.query(`
+    executeQuery(
+        `
                         select p.firstname, p.lastname, p.email, score.score from
                         player as p,
                         (
@@ -195,17 +146,9 @@ app.get('/db/winners', function (request, response) {
                         where score.p_id=p.id
                         order by score.score desc
                         limit 5;
-                        `, function (err, result) {
-            done();
-            if (err) {
-                console.error(err);
-                response.send("Error " + err);
-            }
-            else {
-                response.send({"results": result.rows});
-            }
-        });
-    });
+                        `,
+        [],
+        response);
 });
 
 app.listen(port, function () {
