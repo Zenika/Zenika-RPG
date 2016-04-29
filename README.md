@@ -11,6 +11,16 @@ Winners are available with a service on [/db/winners](http://zenika-rpg.herokuap
 npm install
 ```
 
+## Default database configuration
+``` 
+username: postgres
+password: postgres
+location: localhost
+port: 5432
+name: zenika-rpg
+```
+It can be changed in *server.js*
+
 ## Run
 Standard with database require
 ``` 
