@@ -1,5 +1,11 @@
 # Zenika-RPG
 
+The application is available on [heroku](http://zenika-rpg.herokuapp.com/)
+There is a SQL script to create tables at the root of the project *database.sql*
+We used [Tiled](http://www.mapeditor.org/) to create the map.
+Winners are available with a service on [/db/winners](http://zenika-rpg.herokuapp.com/db/winners)
+
+
 ## Installation
 ``` 
 npm install
