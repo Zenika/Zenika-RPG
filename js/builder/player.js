@@ -5,8 +5,8 @@ ZenikaRPG.BuilderPlayer = function () {
 
 ZenikaRPG.BuilderPlayer.prototype = {
     create: function (game, playerCollisionGroup, collisionGroups, debug) {
-        var ship = game.add.sprite(1240, 1600, 'ship');
-        ship.scale.set(3);
+        var ship = game.add.sprite(1240*0.5, 1600*0.5, 'ship');
+        ship.scale.set(2);
         ship.smoothed = false;
 
         this.buildAnimations(ship);
@@ -36,9 +36,9 @@ ZenikaRPG.BuilderPlayer.prototype = {
     },
     buildAnimations: function(ship){
         var animationFps = 8;
-        ship.animations.add('top', [0, 2, 0, 10], animationFps, true);
-        ship.animations.add('down', [5, 8, 5, 11], animationFps, true);
-        ship.animations.add('left', [6, 3, 6, 9], animationFps, true);
-        ship.animations.add('right', [1, 4, 1, 7], animationFps, true);
+        ship.animations.add('top', [12, 13, 14, 15], animationFps, true);
+        ship.animations.add('down', [0, 1, 2, 3], animationFps, true);
+        ship.animations.add('left', [4, 5, 6, 7], animationFps, true);
+        ship.animations.add('right', [8, 9, 10, 11], animationFps, true);
     }
 };
