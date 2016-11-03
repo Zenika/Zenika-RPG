@@ -1,6 +1,7 @@
 var express = require('express');
 var bodyParser = require('body-parser');
 var pg = require('pg');
+var cors = require('cors');
 
 var app = express();
 
@@ -9,6 +10,7 @@ var app = express();
 var port = process.env.PORT || 5000;
 var databaseUrl = process.env.DATABASE_URL || 'postgres://postgres:postgres@localhost:5432/zenika-rpg';
 
+app.use(cors());
 app.use(bodyParser.json());
 app.use(express.static('.'));
 
@@ -149,11 +151,6 @@ app.get('/db/winners', function (request, response) {
                         `,
         [],
         response);
-});
-app.use(function(req, res, next) {
-  res.header("Access-Control-Allow-Origin", "*");
-  res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
-  next();
 });
 
 app.listen(port, function () {
