@@ -25,7 +25,8 @@ It can be changed in *server.js*
 `git push heroku lego:master`
 
 ## Heroku db creation
-``
+`heroku pg:psql --app zdevfest-rpg`
+Then `\i database.sql`
 
 ## Run
 Standard with database require
