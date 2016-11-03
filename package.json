@@ -5,6 +5,7 @@
   "main": "server.js",
   "dependencies": {
     "body-parser": "^1.15.0",
+    "cors": "^2.8.1",
     "express": "^4.13.4",
     "pg": "4.x"
   },
@@ -19,5 +20,3 @@
   "author": "",
   "license": "ISC"
 }
-
-
