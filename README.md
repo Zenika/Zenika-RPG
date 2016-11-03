@@ -21,6 +21,12 @@ name: zenika-rpg
 ```
 It can be changed in *server.js*
 
+## Heroku upload
+`git push heroku lego:master`
+
+## Heroku db creation
+``
+
 ## Run
 Standard with database require
 ``` 
